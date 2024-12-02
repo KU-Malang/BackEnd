@@ -27,7 +27,23 @@ public class JoinRoomHandler {
 
         // 방이 존재하지 않는 경우
         if (room == null) {
-            JsonObject errorResponse = new ResponseBuilder(4, "error", "방이 존재하지 않습니다.")
+            JsonObject errorResponse = new ResponseBuilder(4, "4001", "존재하지 않는 방 ID입니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
+        // 유저가 존재하지 않는 경우
+        if (!userManager.isValidUser(userId)) {
+            JsonObject errorResponse = new ResponseBuilder(4, "4002", "존재하지 않는 유저 ID입니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
+        // 유저가 로그인되어 있지 않은 경우
+        if (!userManager.isUserLoggedIn(userId)) {
+            JsonObject errorResponse = new ResponseBuilder(4, "4005", "로그인되어 있지 않은 유저입니다.")
                     .build();
             writer.println(errorResponse.toString());
             return;
@@ -36,11 +52,27 @@ public class JoinRoomHandler {
         // 메인 쓰레드와의 연결 종료
         userManager.disconnectFromMainThread(userId);
 
-        // 방 입장 실패
+        // 방 입장 실패 - 인원이 다 찼거나 이미 참가중인 방인 경우
         if (!room.addUser(userId, clientSocket)) {
-            JsonObject errorResponse = new ResponseBuilder(4, "error", "방 입장 실패")
+            JsonObject errorResponse = new ResponseBuilder(4, "4003", "인원이 다 찼거나 이미 참가중인 방입니다.")
                     .build();
             writer.println(errorResponse.toString());
+
+            // 메인 쓰레드와의 연결 복구
+            userManager.connectToMainThread(userId, clientSocket);
+
+            return;
+        }
+
+        // 방 입장 실패 - 이미 게임이 진행 중인 방인 경우
+        if (!room.isGameInProgress()) {
+            JsonObject errorResponse = new ResponseBuilder(4, "4004", "이미 게임이 진행 중인 방입니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+
+            // 메인 쓰레드와의 연결 복구
+            userManager.connectToMainThread(userId, clientSocket);
+
             return;
         }
 
