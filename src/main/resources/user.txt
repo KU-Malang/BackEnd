@@ -1,6 +1,0 @@
-1 minseok 1234 1000
-2 user1 password1 1200
-3 user2 mypass123 1100
-4 changkyun 4321 1300
-5 guest guest123 900
-6 admin adminpass 1500

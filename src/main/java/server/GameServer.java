@@ -1,18 +1,17 @@
 package server;
 
-
-import server.handler.MainHandler;
-import server.manager.RoomManager;
-import server.manager.UserManager;
-import server.util.UserFileUtil;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import server.handler.MainHandler;
+import server.manager.RoomManager;
+import server.manager.UserManager;
+import server.util.UserFileUtil;
 
 public class GameServer {
+
     private static final int PORT = 8080;
 
     private static final UserFileUtil userFileUtil = new UserFileUtil();
@@ -20,7 +19,6 @@ public class GameServer {
     static RoomManager roomManager = new RoomManager(userManager);
 
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
-
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -32,7 +30,7 @@ public class GameServer {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                threadPool.execute(new MainHandler(clientSocket,roomManager,userManager));
+                threadPool.execute(new MainHandler(clientSocket, roomManager, userManager));
             }
         } catch (IOException e) {
             e.printStackTrace();
