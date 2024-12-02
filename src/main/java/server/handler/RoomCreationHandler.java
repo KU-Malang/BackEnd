@@ -2,6 +2,7 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
+import java.net.Socket;
 import server.manager.RoomManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
@@ -14,14 +15,14 @@ public class RoomCreationHandler {
         this.roomManager = roomManager;
     }
 
-    public void handleCreateRoom(JsonObject request, PrintWriter writer) {
+    public void handleCreateRoom(JsonObject request, PrintWriter writer, Socket clientSocket) {
         String roomName = request.get("roomName").getAsString();
         int maxPlayers = request.get("maxPlayers").getAsInt();
         int hostUserId = request.get("hostUserId").getAsInt();
         int quizCount = request.get("quizCount").getAsInt();
 
         // hostUserId가 유효한지 확인
-        if (roomManager.isValidHostUser(hostUserId)) {
+        if (!roomManager.isValidHostUser(hostUserId)) {
             JsonObject errorResponse = new ResponseBuilder(2, "2002", "존재하지 않는 유저 ID입니다.")
                     .build();
             writer.println(errorResponse.toString());
@@ -61,7 +62,7 @@ public class RoomCreationHandler {
         }
 
         // 방 생성
-        Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount);
+        Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount, clientSocket);
 
         // 성공 응답
         JsonObject data = new JsonObject();
