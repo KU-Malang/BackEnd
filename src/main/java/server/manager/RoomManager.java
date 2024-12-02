@@ -21,6 +21,21 @@ public class RoomManager {
         return userManager.isValidUser(userid);
     }
 
+    // 방 이름 유효성 확인
+    public boolean isValidRoomName(String roomName) {
+        return !roomName.isEmpty() && roomName.length() <= 7;
+    }
+
+    // 퀴즈 인원 수 유효성 확인
+    public boolean isValidMaxPlayers(int maxPlayers) {
+        return maxPlayers >= 4 && maxPlayers <= 8;
+    }
+
+    // 퀴즈 문제 수 유효성 확인
+    public boolean isValidQuizCount(int quizCount) {
+        return quizCount >= 10 && quizCount <= 50;
+    }
+
     // 방 이름 중복 확인
     public boolean isDuplicateRoomName(String roomName) {
         return rooms.values().stream()
