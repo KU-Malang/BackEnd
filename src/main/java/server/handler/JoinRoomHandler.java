@@ -76,6 +76,9 @@ public class JoinRoomHandler {
             return;
         }
 
+        // 해당 방에 유저 추가
+        room.addUser(userId, clientSocket);
+
         // 방 입장 성공
         JsonObject data = new JsonObject();
         data.addProperty("roomId", room.getRoomId());
