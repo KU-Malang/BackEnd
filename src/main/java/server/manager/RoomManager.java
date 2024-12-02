@@ -1,12 +1,12 @@
 package server.manager;
 
-import server.model.Room;
-import server.handler.RoomHandler;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import server.handler.RoomHandler;
+import server.model.Room;
 
 public class RoomManager {
+
     private final Map<Integer, Room> rooms = new ConcurrentHashMap<>();
     private final UserManager userManager; // UserManager 주입
 
@@ -16,15 +16,17 @@ public class RoomManager {
         this.userManager = userManager;
     }
 
-    public boolean isValidHostuser(int userid){
+    // 호스트 유저 확인
+    public boolean isValidHostUser(int userid) {
         return userManager.isValidUser(userid);
     }
 
+    // 방 이름 중복 확인
     public boolean isDuplicateRoomName(String roomName) {
-        // 방 이름 중복 확인
         return rooms.values().stream()
                 .anyMatch(room -> room.getRoomName().equalsIgnoreCase(roomName));
     }
+
     // 방 생성
     public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount) {
         RoomHandler roomHandler = new RoomHandler();
@@ -42,15 +44,13 @@ public class RoomManager {
         }
     }
 
-    //전체 방 조회
+    // 전체 방 조회
     public Map<Integer, Room> getAllRooms() {
         return rooms;
     }
-
 
     // 방 조회
     public Room getRoom(int roomId) {
         return rooms.get(roomId);
     }
-
 }

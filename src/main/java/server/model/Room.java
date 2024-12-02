@@ -1,21 +1,21 @@
 package server.model;
 
-import server.UserThread;
-import server.handler.RoomHandler;
-
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import server.UserThread;
+import server.handler.RoomHandler;
 
 public class Room {
+
     private final int roomId;
     private final String roomName;
     private final int maxPlayers;
     private final int hostUserId;
     private final int quizCount;
+    private boolean gameInProgress = false;
     private final Map<Integer, Socket> userSockets = new ConcurrentHashMap<>();
     private final Map<Integer, UserThread> userThreadInstances = new ConcurrentHashMap<>(); // UserThread 인스턴스 관리
-    private boolean gameInProgress = false;
 
     private Thread roomThread; // Room 자체 쓰레드 관리
 
@@ -55,7 +55,6 @@ public class Room {
         return true;
     }
 
-
     // 유저 쓰레드 시작
     private void startUserThread(int userId, Socket socket) {
         UserThread userThread = new UserThread(userId, socket, roomHandler, this);
@@ -78,7 +77,7 @@ public class Room {
         if (userThread != null) {
             userThread.sendMessage(message);
         } else {
-            System.out.println("유저 ID " + userId + "에 대한 UserThread를 찾을 수 없습니다.");
+            System.out.println("유저 ID: " + userId + "에 대한 User Thread를 찾을 수 없습니다.");
         }
     }
 
@@ -88,7 +87,7 @@ public class Room {
             try {
                 userThread.sendMessage(message);
             } catch (Exception e) {
-                System.out.println("메시지 브로드캐스트 실패: 유저 ID " + userId);
+                System.out.println("메시지 브로드캐스트 실패 - 유저 ID: " + userId);
             }
         });
     }
@@ -106,6 +105,10 @@ public class Room {
         return maxPlayers;
     }
 
+    public int getHostUserId() {
+        return hostUserId;
+    }
+
     public int getQuizCount() {
         return quizCount;
     }
@@ -121,10 +124,10 @@ public class Room {
     public int getCurrentPlayers() {
         return userSockets.size();
     }
+
     public Map<Integer, Socket> getUserSockets() {
         return userSockets;
     }
-
 
     public Map<Integer, UserThread> getUserThreadInstances() {
         return userThreadInstances;

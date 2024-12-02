@@ -1,13 +1,12 @@
 package server.handler;
 
 import com.google.gson.JsonObject;
+import java.io.PrintWriter;
+import java.net.Socket;
 import server.manager.RoomManager;
 import server.manager.UserManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
-
-import java.io.PrintWriter;
-import java.net.Socket;
 
 public class JoinRoomHandler {
 
@@ -25,6 +24,8 @@ public class JoinRoomHandler {
 
         // 방 확인
         Room room = roomManager.getRoom(roomId);
+
+        // 방이 존재하지 않는 경우
         if (room == null) {
             JsonObject errorResponse = new ResponseBuilder(4, "error", "방이 존재하지 않습니다.")
                     .build();
@@ -35,9 +36,9 @@ public class JoinRoomHandler {
         // 메인 쓰레드와의 연결 종료
         userManager.disconnectFromMainThread(userId);
 
-        // 방에 유저 추가
+        // 방 입장 실패
         if (!room.addUser(userId, clientSocket)) {
-            JsonObject errorResponse = new ResponseBuilder(4, "error", "방 입장 실패.")
+            JsonObject errorResponse = new ResponseBuilder(4, "error", "방 입장 실패")
                     .build();
             writer.println(errorResponse.toString());
             return;

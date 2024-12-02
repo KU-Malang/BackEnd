@@ -1,13 +1,13 @@
 package server.manager;
 
-import server.model.User;
-import server.util.UserFileUtil;
-
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import server.model.User;
+import server.util.UserFileUtil;
 
 public class UserManager {
+
     private final Map<Integer, User> users; // 유저 데이터 (userId -> User 객체)
     private final Map<Integer, Socket> loggedInUsers = new ConcurrentHashMap<>(); // 로그인된 유저 (userId -> Socket)
     private final UserFileUtil userFileUtil; // 유저 파일 유틸리티
@@ -40,37 +40,27 @@ public class UserManager {
         userFileUtil.save(users); // 파일에 저장
     }
 
-    // 유저 조회
-    public User getUser(int userId) {
-        return users.get(userId);
-    }
-
     // 로그인된 유저 확인
     public boolean isUserLoggedIn(int userId) {
         return loggedInUsers.containsKey(userId);
     }
 
-
-
     // 닉네임과 비밀번호로 유저 존재 여부 확인
     public boolean isValidNickname(String nickname) {
         for (User user : users.values()) {
             if (user.getNickname().equals(nickname)) {
-                return true; // 유저닉네임이 존재함
+                return true; // 유저 닉네임이 존재함
             }
         }
         return false; // 유저 닉네임이 존재하지 않음
     }
 
+    // 유저 ID로 유저 존재 여부 확인
     public boolean isValidUser(int userId) {
-        for (User user : users.values()) {
-            if (user.getUserId()==userId) {
-                return true; // 유저 id가 존재함
-            }
-        }
-        return false; // 유저 id가 존재하지 않음
+        return getUserById(userId) != null;
     }
 
+    // 닉네임과 비밀번호로 유저 조회
     public User getUserByCredentials(String nickname, String password) {
         for (User user : users.values()) {
             if (user.getNickname().equals(nickname) && user.getPassword().equals(password)) {
@@ -79,9 +69,9 @@ public class UserManager {
         }
         return null; // 유저를 찾지 못한 경우
     }
+
+    // 유저 ID로 유저 조회
     public User getUserById(int userId) {
         return users.get(userId);
     }
-
-
 }

@@ -1,6 +1,7 @@
 package server.model;
 
 public class User {
+
     private final int userId;
     private final String nickname;
     private final String password;

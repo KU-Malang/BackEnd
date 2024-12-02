@@ -2,17 +2,17 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import server.manager.RoomManager;
-import server.manager.UserManager;
-import server.util.ResponseBuilder;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import server.manager.RoomManager;
+import server.manager.UserManager;
+import server.util.ResponseBuilder;
 
 public class MainHandler implements Runnable {
+
     private final Socket clientSocket;
     private final RoomManager roomManager;
     private final UserManager userManager;
@@ -45,7 +45,8 @@ public class MainHandler implements Runnable {
                         new RoomListHandler(roomManager, userManager).handleRoomListRequest(request, writer);
                         break;
                     case 4:
-                        new JoinRoomHandler(roomManager, userManager).handleJoinRoomRequest(request, writer, clientSocket);
+                        new JoinRoomHandler(roomManager, userManager).handleJoinRoomRequest(request, writer,
+                                clientSocket);
                         break;
                     default:
                         JsonObject unknownRequestResponse = new ResponseBuilder(messageType, "9999", "알 수 없는 요청입니다.")

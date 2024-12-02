@@ -2,15 +2,13 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import server.model.Room;
-import server.util.ResponseBuilder;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Map;
+import server.model.Room;
+import server.util.ResponseBuilder;
 
 public class RoomHandler {
 
@@ -72,6 +70,7 @@ public class RoomHandler {
                 writer.println(errorResponse.toString());
         }
     }
+
     private String readFromSocket(Socket socket) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             return reader.readLine();
@@ -80,5 +79,4 @@ public class RoomHandler {
             return null;
         }
     }
-
 }
