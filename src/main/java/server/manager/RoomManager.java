@@ -47,7 +47,7 @@ public class RoomManager {
     public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount, Socket socket) {
         RoomHandler roomHandler = new RoomHandler();
         int roomId = nextRoomId++;
-        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, roomHandler);
+        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, roomHandler,userManager);
         room.startThread(); // Room 내부 쓰레드 시작
         rooms.put(roomId, room);
         
@@ -57,12 +57,18 @@ public class RoomManager {
         return room;
     }
 
+    // 방 삭제
     public synchronized void deleteRoom(int roomId) {
         Room room = rooms.remove(roomId);
         if (room != null) {
-            room.stopThread(); // Room 내부 쓰레드 정지
+            room.stopThread(); // 방 쓰레드 중지
+            System.out.println("방 ID " + roomId + "가 삭제되었습니다.");
+        } else {
+            System.out.println("방 ID " + roomId + "를 찾을 수 없습니다.");
         }
     }
+
+
 
     // 전체 방 조회
     public Map<Integer, Room> getAllRooms() {

@@ -12,34 +12,7 @@ import server.util.ResponseBuilder;
 
 public class RoomHandler {
 
-    // 방 쓰레드 실행
-    public void runRoom(Room room) {
-        System.out.println("방 시작: " + room.getRoomName());
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
-                processClientRequests(room); // 클라이언트 요청 처리
-                Thread.sleep(1000); // 1초 대기
-            } catch (InterruptedException e) {
-                System.out.println("방 종료 요청: " + room.getRoomName());
-                break;
-            }
-        }
-    }
 
-    // 클라이언트 요청 처리
-    private void processClientRequests(Room room) {
-        room.getUserSockets().forEach((userId, socket) -> {
-            try (PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)) {
-                String requestJson = readFromSocket(socket);
-                if (requestJson != null) {
-                    handleUserRequest(requestJson, writer);
-                }
-            } catch (Exception e) {
-                System.out.println("유저 [" + userId + "]의 요청 처리 중 오류 발생: " + e.getMessage());
-                room.removeUser(userId);
-            }
-        });
-    }
 
     // 유저 요청 처리 메서드
     public void handleUserRequest(String requestJson, PrintWriter writer) {
@@ -71,12 +44,4 @@ public class RoomHandler {
         }
     }
 
-    private String readFromSocket(Socket socket) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-            return reader.readLine();
-        } catch (IOException e) {
-            System.out.println("소켓에서 데이터 읽기 실패: " + e.getMessage());
-            return null;
-        }
-    }
 }
