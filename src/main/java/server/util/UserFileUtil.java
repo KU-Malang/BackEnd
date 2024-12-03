@@ -13,12 +13,10 @@ import server.model.User;
 public class UserFileUtil {
 
     private static final String USER_FILE = "/home/ubuntu/BackEnd/user.txt"; // 절대 경로로 변경
+
     private int nextUserId = 1; // 새로운 유저 ID를 생성할 때 사용
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
-
-    public UserFileUtil() {
-        load(); // 파일에서 유저 데이터를 로드
-    }
+    
 
     // 유저 데이터를 파일에서 로드
     public void load() {
