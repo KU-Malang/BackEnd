@@ -25,12 +25,7 @@ public class MainHandler {
 
             switch (messageType) {
                 case 1:
-                    int userId = new LoginHandler(userManager).handleRequest(request, writer);
-
-                    if (userId != -1) {
-                        userThread.setUserId(userId); // 로그인 성공 시 UserThread에 userId 할당
-                    }
-
+                    new LoginHandler(userManager).handleRequest(request, writer, userThread);
                     break;
                 case 2:
                     new RoomCreationHandler(roomManager).handleRequest(request, writer);
