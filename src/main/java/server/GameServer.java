@@ -30,7 +30,7 @@ public class GameServer {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                threadPool.execute(new UserThread(clientSocket, mainHandler)); // MainHandler 공유
+                threadPool.execute(new UserThread(clientSocket, mainHandler, userManager)); // MainHandler 공유
             }
         } catch (IOException e) {
             e.printStackTrace();
