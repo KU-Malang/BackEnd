@@ -12,6 +12,7 @@ public class UserThread implements Runnable {
     private final Socket socket;
     private final MainHandler mainHandler; // 공유된 MainHandler 사용
     private volatile boolean running = true; // 쓰레드 상태 관리
+    private int userId = 0; // 로그인되지 않은 상태의 기본값
 
     public UserThread(Socket socket, MainHandler mainHandler) {
         this.socket = socket;
@@ -31,7 +32,7 @@ public class UserThread implements Runnable {
                 }
 
                 System.out.println("요청 처리 중: " + requestJson);
-                mainHandler.mainHandler(requestJson, writer); // 요청 처리
+                mainHandler.mainHandler(requestJson, writer, this); // UserThread 인스턴스를 전달
             }
         } catch (IOException e) {
             System.out.println("클라이언트 연결 종료: " + e.getMessage());
@@ -52,5 +53,10 @@ public class UserThread implements Runnable {
     private void cleanup() {
         System.out.println("유저 쓰레드 종료");
         stopThread();
+    }
+
+    // 로그인 성공 시 UserThread에 유저 ID를 설정하는 메서드 추가
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

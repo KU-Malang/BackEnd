@@ -2,13 +2,12 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
-import java.net.Socket;
 import server.manager.RoomManager;
 import server.manager.UserManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class JoinRoomHandler implements RequestHandler  {
+public class JoinRoomHandler implements RequestHandler {
 
     private final RoomManager roomManager;
     private final UserManager userManager;
@@ -50,17 +49,15 @@ public class JoinRoomHandler implements RequestHandler  {
             return;
         }
 
-
-
         // 방 입장 실패 - 이미 게임이 진행 중인 방인 경우
         if (room.isGameInProgress()) {
             JsonObject errorResponse = new ResponseBuilder(4, "4004", "이미 게임이 진행 중인 방입니다.")
                     .build();
             writer.println(errorResponse.toString());
 
-
             return;
         }
+
         // 방 입장 실패 - 인원이 다 찼거나 이미 참가중인 방인 경우
         if (!room.addUser(userId, writer)) {
             JsonObject errorResponse = new ResponseBuilder(4, "4003", "인원이 다 찼거나 이미 참가중인 방입니다.")
@@ -69,7 +66,6 @@ public class JoinRoomHandler implements RequestHandler  {
 
             return;
         }
-
 
         // 방 입장 성공
         JsonObject data = new JsonObject();
@@ -82,6 +78,4 @@ public class JoinRoomHandler implements RequestHandler  {
                 .build();
         writer.println(successResponse.toString());
     }
-
-
 }

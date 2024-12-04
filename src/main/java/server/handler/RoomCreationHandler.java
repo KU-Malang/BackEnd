@@ -2,7 +2,6 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
-import java.net.Socket;
 import server.manager.RoomManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
@@ -65,8 +64,6 @@ public class RoomCreationHandler implements RequestHandler {
         // 방 생성
         Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount);
         newRoom.addUser(hostUserId, writer);
-
-
 
         // 성공 응답
         JsonObject data = new JsonObject();

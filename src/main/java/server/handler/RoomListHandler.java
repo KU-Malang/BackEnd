@@ -25,6 +25,7 @@ public class RoomListHandler implements RequestHandler {
         JsonArray roomsArray = new JsonArray();
 
         int userId = request.get("userId").getAsInt();
+
         // 유저 정보 가져오기
         User user = userManager.getUserById(userId);
 

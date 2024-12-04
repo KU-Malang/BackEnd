@@ -1,9 +1,8 @@
 package server;
 
-import server.model.Room;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import server.model.Room;
 
 public class RoomThread implements Runnable {
 
@@ -33,6 +32,7 @@ public class RoomThread implements Runnable {
 
     public void stopThread() {
         running = false;
-        taskQueue.offer(() -> {}); // 큐를 깨워서 쓰레드 종료
+        taskQueue.offer(() -> {
+        }); // 큐를 깨워서 쓰레드 종료
     }
 }

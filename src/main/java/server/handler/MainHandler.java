@@ -3,7 +3,7 @@ package server.handler;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.PrintWriter;
-import java.net.Socket;
+import server.UserThread;
 import server.manager.RoomManager;
 import server.manager.UserManager;
 import server.util.ResponseBuilder;
@@ -18,14 +18,19 @@ public class MainHandler {
         this.roomManager = roomManager;
     }
 
-    public void mainHandler(String requestJson, PrintWriter writer) {
+    public void mainHandler(String requestJson, PrintWriter writer, UserThread userThread) {
         try {
             JsonObject request = JsonParser.parseString(requestJson).getAsJsonObject();
             int messageType = request.get("messageType").getAsInt();
 
             switch (messageType) {
                 case 1:
-                    new LoginHandler(userManager).handleRequest(request, writer);
+                    int userId = new LoginHandler(userManager).handleRequest(request, writer);
+
+                    if (userId != -1) {
+                        userThread.setUserId(userId); // 로그인 성공 시 UserThread에 userId 할당
+                    }
+
                     break;
                 case 2:
                     new RoomCreationHandler(roomManager).handleRequest(request, writer);
@@ -44,7 +49,7 @@ public class MainHandler {
                     break;
                 case 7: // 정답 제출
                     //TODO- 정답 제출
-                    new AnswerSubmissionHandler(roomManager).handleRequest(request,writer);
+                    new AnswerSubmissionHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 8: // 오답 제출
                     //TODO- 오답 제출

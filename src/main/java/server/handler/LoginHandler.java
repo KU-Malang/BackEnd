@@ -2,7 +2,6 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
-import java.net.Socket;
 import server.manager.UserManager;
 import server.model.User;
 import server.util.ResponseBuilder;
@@ -16,7 +15,7 @@ public class LoginHandler implements RequestHandler {
     }
 
     @Override
-    public void handleRequest(JsonObject request, PrintWriter writer) {
+    public int handleRequest(JsonObject request, PrintWriter writer) {
         String nickname = request.get("nickname").getAsString();
         String password = request.get("password").getAsString();
 
@@ -24,7 +23,7 @@ public class LoginHandler implements RequestHandler {
             JsonObject errorResponse = new ResponseBuilder(1, "1001", "유저 아이디가 10글자를 초과합니다.")
                     .build();
             writer.println(errorResponse.toString());
-            return;
+            return 0;
         }
 
         // 유저 아이디가 없는 경우 -> 회원가입 진행
@@ -40,7 +39,7 @@ public class LoginHandler implements RequestHandler {
             JsonObject errorResponse = new ResponseBuilder(1, "1002", "비밀번호가 일치하지 않습니다.")
                     .build();
             writer.println(errorResponse.toString());
-            return;
+            return 0;
         }
 
         // 이미 로그인 중인 경우
@@ -48,19 +47,20 @@ public class LoginHandler implements RequestHandler {
             JsonObject errorResponse = new ResponseBuilder(1, "1003", "이미 로그인 중인 유저입니다.")
                     .build();
             writer.println(errorResponse.toString());
-            return;
+            return 0;
         }
 
         userManager.loginUser(currentUser.getUserId(), writer);
-
 
         // 성공 응답
         JsonObject data = new JsonObject();
         data.addProperty("userId", currentUser.getUserId());
 
-        JsonObject successResponse = new ResponseBuilder(1, "success", "로그인 성공")
+        JsonObject successResponse = new ResponseBuilder(1, "success", "성공")
                 .withData(data)
                 .build();
         writer.println(successResponse.toString());
+
+        return currentUser.getUserId(); // 성공 시 유저 ID 반환
     }
 }

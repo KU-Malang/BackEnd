@@ -1,6 +1,5 @@
 package server.manager;
 
-import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import server.model.Room;
@@ -45,10 +44,9 @@ public class RoomManager {
     // 방 생성
     public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount) {
         int roomId = nextRoomId++;
-        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount,userManager);
+        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, userManager);
         room.startThread(); // Room 내부 쓰레드 시작
         rooms.put(roomId, room);
-        
 
         return room;
     }
@@ -63,8 +61,6 @@ public class RoomManager {
             System.out.println("방 ID " + roomId + "를 찾을 수 없습니다.");
         }
     }
-
-
 
     // 전체 방 조회
     public Map<Integer, Room> getAllRooms() {
