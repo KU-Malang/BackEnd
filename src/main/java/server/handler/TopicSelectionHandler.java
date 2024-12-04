@@ -38,7 +38,7 @@ public class TopicSelectionHandler implements RequestHandler {
             return;
         }
 
-        // 방 입장 성공
+        // 주제 선택 성공
         JsonObject data = new JsonObject();
         data.addProperty("topic", topic);
 
