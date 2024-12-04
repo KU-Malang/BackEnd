@@ -3,17 +3,22 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
+import java.net.Socket;
+
 import server.model.Room;
 import server.manager.RoomManager;
 import server.util.ResponseBuilder;
 
-public class AnswerSubmissionHandler   {
+public class AnswerSubmissionHandler implements RequestHandler  {
 
     private final RoomManager roomManager;
 
     public AnswerSubmissionHandler(RoomManager roomManager) {
         this.roomManager = roomManager;
     }
+
+
+    @Override
 
     public void handleRequest(JsonObject request, PrintWriter writer) {
         int userId = request.get("userId").getAsInt();
@@ -25,7 +30,7 @@ public class AnswerSubmissionHandler   {
                 // 점수 증가 로직 실행
                 room.incrementScore(userId);
 
-                // 응답 생성 및 전송
+                //TODO 응답 생성 및 전송
 
             });
         } else {

@@ -2,74 +2,66 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import server.manager.RoomManager;
 import server.manager.UserManager;
 import server.util.ResponseBuilder;
 
-public class MainHandler implements Runnable {
+public class MainHandler {
 
-    private final Socket clientSocket;
-    private final RoomManager roomManager;
     private final UserManager userManager;
+    private final RoomManager roomManager;
 
-    public MainHandler(Socket clientSocket, RoomManager roomManager, UserManager userManager) {
-        this.clientSocket = clientSocket;
-        this.roomManager = roomManager;
+    public MainHandler(UserManager userManager, RoomManager roomManager) {
         this.userManager = userManager;
+        this.roomManager = roomManager;
     }
 
-    @Override
-    public void run() {
-        try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)
-        ) {
-            while (true) {
-                String requestJson = reader.readLine();
+    public void mainHandler(String requestJson, PrintWriter writer) {
+        try {
+            JsonObject request = JsonParser.parseString(requestJson).getAsJsonObject();
+            int messageType = request.get("messageType").getAsInt();
 
-                if (requestJson == null) {
-                    System.out.println("클라이언트 연결이 종료되었습니다.");
-                    break; // 루프 종료
-                }
-
-                try {
-                    JsonObject request = JsonParser.parseString(requestJson).getAsJsonObject();
-                    int messageType = request.get("messageType").getAsInt();
-
-                    switch (messageType) {
-                        case 1:
-                            new LoginHandler(userManager).handleLogin(request, writer, clientSocket);
-                            break;
-                        case 2:
-                            new RoomCreationHandler(roomManager).handleCreateRoom(request, writer, clientSocket);
-                            break;
-                        case 3:
-                            new RoomListHandler(roomManager, userManager).handleRoomListRequest(request, writer);
-                            break;
-                        case 4:
-                            new JoinRoomHandler(roomManager, userManager).handleJoinRoomRequest(request, writer,
-                                    clientSocket);
-                            break;
-                        default:
-                            JsonObject unknownRequestResponse = new ResponseBuilder(0, "9999", "알 수 없는 요청입니다.")
-                                    .build();
-                            writer.println(unknownRequestResponse.toString());
-                            break;
-                    }
-                } catch (Exception e) {
-                    System.out.println("예외 발생: " + e.getMessage());
-                    JsonObject errorResponse = new ResponseBuilder(0, "9998", "잘못된 요청 형식입니다.")
+            switch (messageType) {
+                case 1:
+                    new LoginHandler(userManager).handleRequest(request, writer);
+                    break;
+                case 2:
+                    new RoomCreationHandler(roomManager).handleRequest(request, writer);
+                    break;
+                case 3:
+                    new RoomListHandler(roomManager, userManager).handleRequest(request, writer);
+                    break;
+                case 4:
+                    new JoinRoomHandler(roomManager, userManager).handleRequest(request, writer);
+                    break;
+                case 5: // 퀴즈 주제 선택
+                    //TODO- 퀴즈 주제 선택
+                    break;
+                case 6: // 문제 출제
+                    //TODO- 문제 출제
+                    break;
+                case 7: // 정답 제출
+                    //TODO- 정답 제출
+                    new AnswerSubmissionHandler(roomManager).handleRequest(request,writer);
+                    break;
+                case 8: // 오답 제출
+                    //TODO- 오답 제출
+                    break;
+                case 9: // 게임 결과 제공
+                    //TODO- 게임 결과 제공
+                    break;
+                case 10: // 방 나가기
+                    //TODO- 방 나가기
+                    break;
+                default:
+                    JsonObject errorResponse = new ResponseBuilder(messageType, "9999", "알 수 없는 요청입니다.")
                             .build();
                     writer.println(errorResponse.toString());
-                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("요청 처리 중 오류: " + e.getMessage());
         }
     }
 }

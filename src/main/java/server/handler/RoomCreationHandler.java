@@ -7,7 +7,7 @@ import server.manager.RoomManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class RoomCreationHandler {
+public class RoomCreationHandler implements RequestHandler {
 
     private final RoomManager roomManager;
 
@@ -15,7 +15,8 @@ public class RoomCreationHandler {
         this.roomManager = roomManager;
     }
 
-    public void handleCreateRoom(JsonObject request, PrintWriter writer, Socket clientSocket) {
+    @Override
+    public void handleRequest(JsonObject request, PrintWriter writer) {
         String roomName = request.get("roomName").getAsString();
         int maxPlayers = request.get("maxPlayers").getAsInt();
         int hostUserId = request.get("hostUserId").getAsInt();
@@ -62,7 +63,10 @@ public class RoomCreationHandler {
         }
 
         // 방 생성
-        Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount, clientSocket);
+        Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount);
+        newRoom.addUser(hostUserId, writer);
+
+
 
         // 성공 응답
         JsonObject data = new JsonObject();

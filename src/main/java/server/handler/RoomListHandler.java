@@ -9,7 +9,7 @@ import server.model.Room;
 import server.model.User;
 import server.util.ResponseBuilder;
 
-public class RoomListHandler {
+public class RoomListHandler implements RequestHandler {
 
     private final RoomManager roomManager;
     private final UserManager userManager;
@@ -19,7 +19,8 @@ public class RoomListHandler {
         this.userManager = userManager;
     }
 
-    public void handleRoomListRequest(JsonObject request, PrintWriter writer) {
+    @Override
+    public void handleRequest(JsonObject request, PrintWriter writer) {
         // 모든 방 목록 가져오기
         JsonArray roomsArray = new JsonArray();
 
