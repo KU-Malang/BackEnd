@@ -64,7 +64,6 @@ public class RoomCreationHandler implements RequestHandler {
 
         // 방 생성
         Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount);
-        newRoom.addUser(hostUserId, writer);
 
 
 
