@@ -1,5 +1,6 @@
 package server.manager;
 
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,7 +10,7 @@ import server.util.UserFileUtil;
 public class UserManager {
 
     private final Map<Integer, User> users; // 유저 데이터 (userId -> User 객체)
-    private final Map<Integer, Socket> loggedInUsers = new ConcurrentHashMap<>(); // 로그인된 유저 (userId -> Socket)
+    private final Map<Integer, PrintWriter> loggedInUsers = new ConcurrentHashMap<>(); // 로그인된 유저 (userId -> Socket)
     private final UserFileUtil userFileUtil; // 유저 파일 유틸리티
 
     public UserManager() {
@@ -18,12 +19,12 @@ public class UserManager {
     }
 
     // 유저 로그인
-    public void connectToMainThread(int userId, Socket socket) {
-        loggedInUsers.put(userId, socket); // 유저를 로그인 상태로 추가
+    public void loginUser(int userId, PrintWriter writer) {
+        loggedInUsers.put(userId,writer ); // 유저를 로그인 상태로 추가
     }
 
     // 유저 로그아웃
-    public void disconnectFromMainThread(int userId) {
+    public void logoutUser(int userId) {
         loggedInUsers.remove(userId); // 로그인 상태에서 제거
     }
 

@@ -7,7 +7,7 @@ import server.manager.UserManager;
 import server.model.User;
 import server.util.ResponseBuilder;
 
-public class LoginHandler {
+public class LoginHandler implements RequestHandler {
 
     private final UserManager userManager; // UserManager 주입
 
@@ -15,7 +15,8 @@ public class LoginHandler {
         this.userManager = userManager;
     }
 
-    public void handleLogin(JsonObject request, PrintWriter writer, Socket clientSocket) {
+    @Override
+    public void handleRequest(JsonObject request, PrintWriter writer) {
         String nickname = request.get("nickname").getAsString();
         String password = request.get("password").getAsString();
 
@@ -50,8 +51,8 @@ public class LoginHandler {
             return;
         }
 
-        // 로그인 처리
-        userManager.connectToMainThread(currentUser.getUserId(), clientSocket);
+        userManager.loginUser(currentUser.getUserId(), writer);
+
 
         // 성공 응답
         JsonObject data = new JsonObject();

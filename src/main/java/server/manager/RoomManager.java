@@ -3,7 +3,6 @@ package server.manager;
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import server.handler.RoomHandler;
 import server.model.Room;
 
 public class RoomManager {
@@ -44,15 +43,12 @@ public class RoomManager {
     }
 
     // 방 생성
-    public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount, Socket socket) {
-        RoomHandler roomHandler = new RoomHandler();
+    public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount) {
         int roomId = nextRoomId++;
-        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, roomHandler,userManager);
+        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount,userManager);
         room.startThread(); // Room 내부 쓰레드 시작
         rooms.put(roomId, room);
         
-        userManager.disconnectFromMainThread(hostUserId); // 메인 쓰레드와의 연결 종료
-        room.addUser(hostUserId, socket);
 
         return room;
     }

@@ -5,22 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import server.handler.RoomHandler;
-import server.model.Room;
+import server.handler.MainHandler;
 
 public class UserThread implements Runnable {
 
-    private final int userId;
     private final Socket socket;
-    private final RoomHandler roomHandler;
-    private final Room room;
+    private final MainHandler mainHandler; // 공유된 MainHandler 사용
     private volatile boolean running = true; // 쓰레드 상태 관리
 
-    public UserThread(int userId, Socket socket, RoomHandler roomHandler, Room room) {
-        this.userId = userId;
+    public UserThread(Socket socket, MainHandler mainHandler) {
         this.socket = socket;
-        this.roomHandler = roomHandler;
-        this.room = room;
+        this.mainHandler = mainHandler;
     }
 
     @Override
@@ -34,25 +29,14 @@ public class UserThread implements Runnable {
                 if (requestJson == null) {
                     break; // 클라이언트 연결 종료
                 }
-                System.out.println("유저 요청 받음 - 유저 ID: " + userId + " -> " + requestJson);
 
-                // 요청 처리
-                roomHandler.handleUserRequest(requestJson, writer);
+                System.out.println("요청 처리 중: " + requestJson);
+                mainHandler.mainHandler(requestJson, writer); // 요청 처리
             }
         } catch (IOException e) {
-            System.out.println("유저 ID: " + userId + " 연결 종료: " + e.getMessage());
+            System.out.println("클라이언트 연결 종료: " + e.getMessage());
         } finally {
             cleanup();
-        }
-    }
-
-    public void sendMessage(String message) {
-        try {
-            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            writer.println(message);
-            System.out.println("메시지 전송 성공 - 유저 ID: " + userId + " -> " + message);
-        } catch (IOException e) {
-            System.out.println("메시지 전송 실패 - 유저 ID: " + userId);
         }
     }
 
@@ -61,12 +45,12 @@ public class UserThread implements Runnable {
         try {
             socket.close(); // 소켓 닫기
         } catch (IOException e) {
-            System.out.println("소켓 종료 실패 - 유저 ID: " + userId);
+            System.out.println("소켓 종료 실패: " + e.getMessage());
         }
     }
 
     private void cleanup() {
-        System.out.println("유저 쓰레드 종료 - 유저 ID: " + userId);
-        room.removeUser(userId); // 방에서 유저 제거
+        System.out.println("유저 쓰레드 종료");
+        stopThread();
     }
 }

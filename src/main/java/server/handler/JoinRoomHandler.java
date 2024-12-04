@@ -8,7 +8,7 @@ import server.manager.UserManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class JoinRoomHandler {
+public class JoinRoomHandler implements RequestHandler  {
 
     private final RoomManager roomManager;
     private final UserManager userManager;
@@ -18,7 +18,8 @@ public class JoinRoomHandler {
         this.userManager = userManager;
     }
 
-    public void handleJoinRoomRequest(JsonObject request, PrintWriter writer, Socket clientSocket) {
+    @Override
+    public void handleRequest(JsonObject request, PrintWriter writer) {
         int roomId = request.get("roomId").getAsInt();
         int userId = request.get("userId").getAsInt();
 
@@ -43,41 +44,32 @@ public class JoinRoomHandler {
 
         // 유저가 로그인되어 있지 않은 경우
         if (!userManager.isUserLoggedIn(userId)) {
-            JsonObject errorResponse = new ResponseBuilder(4, "4005", "로그인되어 있지 않은 유저입니다.")
+            JsonObject errorResponse = new ResponseBuilder(4, "4005", "로그인되어 있지 않거나 이미 참여한 유저입니다.")
                     .build();
             writer.println(errorResponse.toString());
             return;
         }
 
-        // 메인 쓰레드와의 연결 종료
-        userManager.disconnectFromMainThread(userId);
 
-        // 방 입장 실패 - 인원이 다 찼거나 이미 참가중인 방인 경우
-        if (!room.addUser(userId, clientSocket)) {
-            JsonObject errorResponse = new ResponseBuilder(4, "4003", "인원이 다 찼거나 이미 참가중인 방입니다.")
-                    .build();
-            writer.println(errorResponse.toString());
-
-            // 메인 쓰레드와의 연결 복구
-            userManager.connectToMainThread(userId, clientSocket);
-
-            return;
-        }
 
         // 방 입장 실패 - 이미 게임이 진행 중인 방인 경우
-        if (!room.isGameInProgress()) {
+        if (room.isGameInProgress()) {
             JsonObject errorResponse = new ResponseBuilder(4, "4004", "이미 게임이 진행 중인 방입니다.")
                     .build();
             writer.println(errorResponse.toString());
 
-            // 메인 쓰레드와의 연결 복구
-            userManager.connectToMainThread(userId, clientSocket);
+
+            return;
+        }
+        // 방 입장 실패 - 인원이 다 찼거나 이미 참가중인 방인 경우
+        if (!room.addUser(userId, writer)) {
+            JsonObject errorResponse = new ResponseBuilder(4, "4003", "인원이 다 찼거나 이미 참가중인 방입니다.")
+                    .build();
+            writer.println(errorResponse.toString());
 
             return;
         }
 
-        // 해당 방에 유저 추가
-        room.addUser(userId, clientSocket);
 
         // 방 입장 성공
         JsonObject data = new JsonObject();
@@ -90,4 +82,6 @@ public class JoinRoomHandler {
                 .build();
         writer.println(successResponse.toString());
     }
+
+
 }
