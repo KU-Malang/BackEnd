@@ -48,6 +48,8 @@ public class RoomListHandler implements RequestHandler {
 
         // 응답 생성
         JsonObject data = new JsonObject();
+        data.addProperty("nickname", user.getNickname());
+        data.addProperty("rating", user.getRating());
         data.add("rooms", roomsArray);
 
         JsonObject successResponse = new ResponseBuilder(3, "success", "방 목록 조회 성공")
