@@ -40,6 +40,7 @@ public class UserFileUtil {
 
                     users.put(userId, new User(userId, nickname, password, rating));
                     nextUserId = Math.max(nextUserId, userId + 1); // 가장 큰 userId 갱신
+                    System.out.println("nextUserId: " + nextUserId);
                 }
             }
             System.out.println("유저 파일 로드 완료: " + users.size() + "명의 유저");
@@ -50,18 +51,16 @@ public class UserFileUtil {
 
     // 새로운 유저 추가
     public synchronized void addUser(User user) {
-        users.put(user.getUserId(), user);
-        save(users);
+        if (!users.containsKey(user.getUserId())) { // 중복 데이터 방지
+            users.put(user.getUserId(), user);
+            save(user); // 새로 추가된 데이터만 저장
+        }
     }
 
-    // 유저 데이터를 파일에 저장
-    public synchronized void save(Map<Integer, User> users) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE))) {
-            for (User user : users.values()) {
-                writer.write(user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " "
-                        + user.getRating());
-                writer.newLine();
-            }
+    public synchronized void save(User user) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE, true))) { // append = true
+            writer.write(user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " " + user.getRating());
+            writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }

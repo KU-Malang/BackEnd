@@ -13,8 +13,8 @@ public class UserManager {
     private final Map<Integer, PrintWriter> loggedInUsers = new ConcurrentHashMap<>(); // 로그인된 유저 (userId -> Socket)
     private final UserFileUtil userFileUtil; // 유저 파일 유틸리티
 
-    public UserManager() {
-        this.userFileUtil = new UserFileUtil();
+    public UserManager(UserFileUtil userFileUtil) {
+        this.userFileUtil= userFileUtil;
         this.users = new ConcurrentHashMap<>(userFileUtil.getUsers()); // 파일에서 유저 데이터 로드
     }
 
@@ -31,15 +31,16 @@ public class UserManager {
     // 유저 추가
     public synchronized void addUser(String nickname, String password) {
         int userId = userFileUtil.getNextUserId(); // 새로운 userId 할당
+        System.out.println("userID = " + userId);
         User newUser = new User(userId, nickname, password);
         users.put(userId, newUser);
         userFileUtil.addUser(newUser); // 파일에 유저 데이터 추가
     }
 
     // 유저 데이터 저장
-    public synchronized void saveUsers() {
-        userFileUtil.save(users); // 파일에 저장
-    }
+//    public synchronized void saveUsers() {
+//        userFileUtil.save(users); // 파일에 저장
+//    }
 
     // 로그인된 유저 확인
     public boolean isUserLoggedIn(int userId) {

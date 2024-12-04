@@ -15,7 +15,7 @@ public class GameServer {
     private static final int PORT = 8080;
 
     private static final UserFileUtil userFileUtil = new UserFileUtil();
-    private static final UserManager userManager = new UserManager();
+    private static final UserManager userManager = new UserManager(userFileUtil);
     private static final RoomManager roomManager = new RoomManager(userManager);
     private static final MainHandler mainHandler = new MainHandler(userManager, roomManager); // 공유 가능한 MainHandler
 
