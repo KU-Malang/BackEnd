@@ -54,6 +54,14 @@ public class WrongAnswerHandler implements RequestHandler {
             return;
         }
 
+        // 방에 참여 중인 유저가 아닐 경우
+        if (!roomManager.isUserInRoom(roomId, userId)) {
+            JsonObject errorResponse = new ResponseBuilder(8, "8005", "방에 참여 중인 유저가 아닙니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
         // 오답 제출 성공 응답
         JsonObject data = new JsonObject();
         data.addProperty("userId", userId);

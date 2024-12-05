@@ -1,5 +1,7 @@
 package server.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,7 @@ public class Room {
     private final int roomId;
     private final String roomName;
     private final int maxPlayers;
-    private final int hostUserId;
+    private int hostUserId;
     private final int quizCount;
     private boolean gameInProgress = false;
     private boolean isPracticeIssued = false; // 연습 문제 출제 여부
@@ -20,7 +22,6 @@ public class Room {
     private int redemptionQuizIndex; // 패자부활전 문제 번호
     private int currentQuizCount = 0;
 
-    private final Map<Integer, Integer> userRating = new ConcurrentHashMap<>(); // 유저 점수 관리
     private final Map<Integer, PrintWriter> userWriter = new ConcurrentHashMap<>();
     private final Map<Integer, Integer> userCorrectCount = new ConcurrentHashMap<>(); // 유저 정답 개수 관리
     private final Map<Integer, Boolean> userStatus = new ConcurrentHashMap<>(); // 유저 상태 관리
@@ -50,12 +51,6 @@ public class Room {
         roomThread.stopThread();
     }
 
-    // 점수 증가 메서드
-    public synchronized void incrementScore(int userId) {
-        userRating.put(userId, userRating.getOrDefault(userId, 0) + 1);
-        System.out.println("유저 " + userId + "의 점수가 증가했습니다: " + userRating.get(userId));
-    }
-
     // 작업 추가
     public void addTask(Runnable task) {
         roomThread.addTask(task);
@@ -67,9 +62,19 @@ public class Room {
             return false;
         }
         userWriter.put(userId, writer);
-        int addUserRating = userManager.getUserById(userId).getRating();
-        this.userRating.put(userId, addUserRating);
         return true;
+    }
+
+    // 방에 참여 중인 유저인지 확인
+    public boolean isUserInRoom(int userId) {
+        return userWriter.containsKey(userId);
+    }
+
+    // 유저 삭제
+    public synchronized void removeUser(int userId) {
+        userWriter.remove(userId);
+        userCorrectCount.remove(userId);
+        userStatus.remove(userId);
     }
 
     // 특정 유저에게 메시지 전송
@@ -193,6 +198,27 @@ public class Room {
     public synchronized void incrementCorrectCount(int userId) {
         userCorrectCount.put(userId, userCorrectCount.getOrDefault(userId, 0) + 1);
         System.out.println("유저 " + userId + "의 정답 개수가 증가했습니다: " + userCorrectCount.get(userId));
+    }
+
+    // userWriter의 1번째 index의 key를 hostUserId로 설정
+    public void setHostUserId() {
+        if (!userWriter.isEmpty()) {
+            this.hostUserId = userWriter.keySet().iterator().next();
+        } else {
+            this.roomThread.stopThread();
+        }
+    }
+
+    // 방에 참여 중인 유저 닉네임 리스트를 JsonArray로 반환
+    public JsonArray getUserNicknameList() {
+        JsonArray userNicknameList = new JsonArray();
+        userWriter.keySet().forEach(userId -> {
+            String userNickname = userManager.getUserNickname(userId);
+            JsonObject userNicknameJson = new JsonObject();
+            userNicknameJson.addProperty("userName", userNickname);
+            userNicknameList.add(userNicknameJson);
+        });
+        return userNicknameList;
     }
 
     public void setPracticeIssued() {
