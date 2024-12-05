@@ -75,6 +75,8 @@ public class Room {
     // 특정 유저에게 메시지 전송
     public synchronized void sendMessageToUser(int userId, String message) {
         userWriter.get(userId).println(message);
+        userWriter.get(userId).flush(); // 버퍼를 비워줌
+
     }
 
     // 모든 유저에게 메시지 브로드캐스트
