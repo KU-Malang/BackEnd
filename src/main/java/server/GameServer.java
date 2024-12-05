@@ -25,9 +25,6 @@ public class GameServer {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("서버가 시작되었습니다. 포트: " + PORT);
 
-            System.out.println("유저 파일을 읽어옵니다...");
-            userFileUtil.load();
-
             // 안전한 종료를 위한 Shutdown Hook 추가
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 System.out.println("서버를 종료합니다. 모든 자원을 해제합니다...");

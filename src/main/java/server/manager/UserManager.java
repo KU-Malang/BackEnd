@@ -14,6 +14,7 @@ public class UserManager {
 
     public UserManager(UserFileUtil userFileUtil) {
         this.userFileUtil = userFileUtil;
+        userFileUtil.load();
         this.users = new ConcurrentHashMap<>(userFileUtil.getUsers()); // 파일에서 유저 데이터 로드
     }
 
