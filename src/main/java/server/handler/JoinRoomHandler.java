@@ -76,6 +76,6 @@ public class JoinRoomHandler implements RequestHandler {
         JsonObject successResponse = new ResponseBuilder(4, "success", "방 입장 성공")
                 .withData(data)
                 .build();
-        writer.println(successResponse.toString());
+        room.broadcastMessage(successResponse.toString());
     }
 }
