@@ -55,6 +55,9 @@ public class MainHandler {
                 case 10: // 방 나가기
                     //TODO- 방 나가기
                     break;
+                case 11:
+                    new GameStartHandler(roomManager).handleRequest(request, writer);
+                    break;
                 default:
                     JsonObject errorResponse = new ResponseBuilder(messageType, "9999", "알 수 없는 요청입니다.")
                             .build();

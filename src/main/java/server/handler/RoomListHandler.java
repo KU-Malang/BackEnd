@@ -37,6 +37,14 @@ public class RoomListHandler implements RequestHandler {
             return;
         }
 
+        // 로그인되어 있지 않은 경우
+        if (!userManager.isUserLoggedIn(userId)) {
+            JsonObject errorResponse = new ResponseBuilder(3, "3002", "로그인되어 있지 않은 유저입니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
         for (Room room : roomManager.getAllRooms().values()) {
             JsonObject roomJson = new JsonObject();
             roomJson.addProperty("roomId", room.getRoomId());

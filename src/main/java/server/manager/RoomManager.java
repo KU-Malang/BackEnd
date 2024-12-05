@@ -15,9 +15,19 @@ public class RoomManager {
         this.userManager = userManager;
     }
 
-    // 호스트 유저 확인
-    public boolean isValidHostUser(int userid) {
+    // 유저 확인
+    public boolean isValidUser(int userid) {
         return userManager.isValidUser(userid);
+    }
+
+    // 호스트 유저인지 확인
+    public boolean isValidHostUser(int roomId, int userid) {
+        return getRoom(roomId).getHostUserId() == userid;
+    }
+
+    // 로그인되어 있는 유저인지 확인
+    public boolean isLoginUser(int userId) {
+        return userManager.isUserLoggedIn(userId);
     }
 
     // 방 이름 유효성 확인
@@ -60,6 +70,41 @@ public class RoomManager {
         } else {
             System.out.println("방 ID " + roomId + "를 찾을 수 없습니다.");
         }
+    }
+
+    // 게임 시작
+    public void startGame(int roomId) {
+        getRoom(roomId).startGame();
+    }
+
+    // 퀴즈 카운트 증가
+    public void incrementQuizCount(int roomId) {
+        getRoom(roomId).incrementQuizCount();
+    }
+
+    // 게임 진행 중인지 확인
+    public boolean isGameInProgress(int roomId) {
+        return getRoom(roomId).isGameInProgress();
+    }
+
+    // 유효한 문제 번호인지 확인
+    public boolean isCorrectQuizIndex(int roomId, int quizIndex) {
+        return getRoom(roomId).isCorrectQuizIndex(quizIndex);
+    }
+
+    // 정답 제출
+    public void markAnswerSubmitted(int roomId, int quizIndex) {
+        getRoom(roomId).markAnswerSubmitted(quizIndex);
+    }
+
+    // 정답 제출 여부 확인
+    public boolean isAnswerSubmitted(int roomId, int quizIndex) {
+        return getRoom(roomId).isAnswerSubmitted(quizIndex);
+    }
+
+    // 유저 정답 개수 증가
+    public void incrementCorrectCount(int roomId, int userId) {
+        getRoom(roomId).incrementCorrectCount(userId);
     }
 
     // 전체 방 조회
