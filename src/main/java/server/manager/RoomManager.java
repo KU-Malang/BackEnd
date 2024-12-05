@@ -77,6 +77,11 @@ public class RoomManager {
         getRoom(roomId).startGame();
     }
 
+    // 퀴즈 카운트 증가
+    public void incrementQuizCount(int roomId) {
+        getRoom(roomId).incrementQuizCount();
+    }
+
     // 전체 방 조회
     public Map<Integer, Room> getAllRooms() {
         return rooms;
