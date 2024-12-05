@@ -22,11 +22,10 @@ public class GameResultHandler implements RequestHandler {
     public void handleRequest(JsonObject request, PrintWriter writer) {
         int roomId = request.get("roomId").getAsInt();
         Room room = roomManager.getRoom(roomId);
-        Map<Integer, Integer> userCorrectCount = room.getUserCorrectCount();
 
         // 방이 존재하지 않는 경우
         if (room == null) {
-            JsonObject errorResponse = new ResponseBuilder(7, "9001", "존재하지 않는 방 ID입니다.")
+            JsonObject errorResponse = new ResponseBuilder(9, "9001", "존재하지 않는 방 ID입니다.")
                     .build();
             writer.println(errorResponse.toString());
             return;
@@ -35,12 +34,13 @@ public class GameResultHandler implements RequestHandler {
 
         // 게임이 진행 중인 방인지 확인
         if (!room.isGameInProgress()) {
-            JsonObject errorResponse = new ResponseBuilder(7, "9002", "게임이 진행 중인 방이 아닙니다.")
+            JsonObject errorResponse = new ResponseBuilder(9, "9002", "게임이 진행 중인 방이 아닙니다.")
                     .build();
             writer.println(errorResponse.toString());
             return;
         }
 
+        Map<Integer, Integer> userCorrectCount = room.getUserCorrectCount();
         // 총 맞춘 정답 수와 평균 계산
         int totalCorrect = userCorrectCount.values().stream().mapToInt(Integer::intValue).sum();
         int userCount = userCorrectCount.size();
