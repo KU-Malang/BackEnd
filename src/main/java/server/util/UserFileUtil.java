@@ -39,7 +39,6 @@ public class UserFileUtil {
 
                     users.put(userId, new User(userId, nickname, password, rating));
                     nextUserId = Math.max(nextUserId, userId + 1); // 가장 큰 userId 갱신
-                    System.out.println("nextUserId: " + nextUserId);
                 }
             }
             System.out.println("유저 파일 로드 완료: " + users.size() + "명의 유저");
