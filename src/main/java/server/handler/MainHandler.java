@@ -39,17 +39,17 @@ public class MainHandler {
                 case 5:
                     new TopicSelectionHandler(roomManager).handleRequest(request, writer);
                     break;
-                case 6: // 문제 출제
+                case 6:
                     new IssueQuestionHandler(roomManager).handleRequest(request, writer);
                     break;
-                case 7: // 정답 제출
+                case 7:
                     new CorrectAnswerHandler(roomManager).handleRequest(request, writer);
                     break;
-                case 8: // 오답 제출
+                case 8:
                     new WrongAnswerHandler(roomManager).handleRequest(request, writer);
                     break;
-                case 9: // 게임 결과 제공
-                    new GameResultHandler(userManager,roomManager).handleRequest(request, writer);
+                case 9:
+                    new GameResultHandler(userManager, roomManager).handleRequest(request, writer);
                     break;
                 case 10:
                     new ExitRoomHandler(roomManager).handleRequest(request, writer);

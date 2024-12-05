@@ -124,8 +124,8 @@ public class RoomManager {
     }
 
     // 유저 ID로 유저 닉네임 조회
-    public String getUserNicknameById(int userId) {
-        return userManager.getUserNicknameById(userId);
+    public String getUserNickname(int userId) {
+        return userManager.getUserNickname(userId);
     }
 
     // 유저 레이팅 증가
@@ -136,6 +136,11 @@ public class RoomManager {
     // 유저 레이팅 감소
     public void decreaseRating(int userId, int amount) {
         userManager.decreaseRating(userId, amount);
+    }
+
+    // 유저 레이팅 갱신
+    public void updateUserScore(int userId, int newRating) {
+        userManager.updateUserScore(userId, newRating);
     }
 
     // 유저 ID로 유저 조회

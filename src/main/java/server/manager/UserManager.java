@@ -83,16 +83,12 @@ public class UserManager {
     }
 
     public void updateUserScore(int userId, int newRating) {
-        userFileUtil.updateUserScore(userId,newRating);
-    }
-
-    public String getUserNickname(Integer userId) {
-        return getUserById(userId).getNickname();
+        userFileUtil.updateUserScore(userId, newRating);
     }
 
     // 유저 ID로 유저 닉네임 조회
-    public String getUserNicknameById(int userId) {
-        return users.get(userId).getNickname();
+    public String getUserNickname(Integer userId) {
+        return getUserById(userId).getNickname();
     }
 
     // 유저 레이팅 증가

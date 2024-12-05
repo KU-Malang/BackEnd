@@ -51,8 +51,6 @@ public class Room {
         roomThread.stopThread();
     }
 
-
-
     // 작업 추가
     public void addTask(Runnable task) {
         roomThread.addTask(task);
@@ -74,7 +72,6 @@ public class Room {
 
     // 유저 삭제
     public synchronized void removeUser(int userId) {
-        userRating.remove(userId);
         userWriter.remove(userId);
         userCorrectCount.remove(userId);
         userStatus.remove(userId);
@@ -216,7 +213,7 @@ public class Room {
     public JsonArray getUserNicknameList() {
         JsonArray userNicknameList = new JsonArray();
         userWriter.keySet().forEach(userId -> {
-            String userNickname = userManager.getUserNicknameById(userId);
+            String userNickname = userManager.getUserNickname(userId);
             JsonObject userNicknameJson = new JsonObject();
             userNicknameJson.addProperty("userName", userNickname);
             userNicknameList.add(userNicknameJson);

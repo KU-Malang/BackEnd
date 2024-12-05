@@ -65,6 +65,8 @@ public class ExitRoomHandler implements RequestHandler {
             } else {
                 roomManager.decreaseRating(userId, 300);
             }
+
+            roomManager.updateUserScore(userId, user.getRating());
         }
 
         JsonObject successResponse = new ResponseBuilder(10, "success", "성공")
@@ -77,7 +79,7 @@ public class ExitRoomHandler implements RequestHandler {
         }
 
         String roomName = room.getRoomName();
-        String hostUser = roomManager.getUserNicknameById(room.getHostUserId());
+        String hostUser = roomManager.getUserNickname(room.getHostUserId());
 
         // 방 나가기 성공 응답
         JsonObject data = new JsonObject();

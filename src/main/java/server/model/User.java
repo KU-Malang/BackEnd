@@ -48,8 +48,4 @@ public class User {
     public void decreaseRating(int amount) {
         this.rating -= amount;
     }
-
-    public void setRating(int newRating) {
-        this.rating = newRating;
-    }
 }
