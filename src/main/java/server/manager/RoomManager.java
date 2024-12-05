@@ -3,6 +3,7 @@ package server.manager;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import server.model.Room;
+import server.model.User;
 
 public class RoomManager {
 
@@ -28,6 +29,16 @@ public class RoomManager {
     // 로그인되어 있는 유저인지 확인
     public boolean isLoginUser(int userId) {
         return userManager.isUserLoggedIn(userId);
+    }
+
+    // 방에 참여 중인 유저인지 확인
+    public boolean isUserInRoom(int roomId, int userId) {
+        return getRoom(roomId).isUserInRoom(userId);
+    }
+
+    // 해당 방에서 유저 삭제
+    public void removeUserFromRoom(int roomId, int userId) {
+        getRoom(roomId).removeUser(userId);
     }
 
     // 방 이름 유효성 확인
@@ -110,6 +121,26 @@ public class RoomManager {
     // 유저 정답 개수 증가
     public void incrementCorrectCount(int roomId, int userId) {
         getRoom(roomId).incrementCorrectCount(userId);
+    }
+
+    // 유저 ID로 유저 닉네임 조회
+    public String getUserNicknameById(int userId) {
+        return userManager.getUserNicknameById(userId);
+    }
+
+    // 유저 레이팅 증가
+    public void increaseRating(int userId, int amount) {
+        userManager.increaseRating(userId, amount);
+    }
+
+    // 유저 레이팅 감소
+    public void decreaseRating(int userId, int amount) {
+        userManager.decreaseRating(userId, amount);
+    }
+
+    // 유저 ID로 유저 조회
+    public User getUserById(int userId) {
+        return userManager.getUserById(userId);
     }
 
     // 전체 방 조회

@@ -51,8 +51,8 @@ public class MainHandler {
                 case 9: // 게임 결과 제공
                     //TODO- 게임 결과 제공
                     break;
-                case 10: // 방 나가기
-                    //TODO- 방 나가기
+                case 10:
+                    new ExitRoomHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 11:
                     new GameStartHandler(roomManager).handleRequest(request, writer);

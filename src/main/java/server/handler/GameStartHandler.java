@@ -61,6 +61,14 @@ public class GameStartHandler implements RequestHandler {
             return;
         }
 
+        // 방에 참여 중인 유저가 아닐 경우
+        if (!roomManager.isUserInRoom(roomId, userId)) {
+            JsonObject errorResponse = new ResponseBuilder(11, "11006", "방에 참여 중인 유저가 아닙니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
         // 게임 시작
         roomManager.startGame(roomId);
 

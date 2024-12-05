@@ -76,4 +76,21 @@ public class UserManager {
     public User getUserById(int userId) {
         return users.get(userId);
     }
+
+    // 유저 ID로 유저 닉네임 조회
+    public String getUserNicknameById(int userId) {
+        return users.get(userId).getNickname();
+    }
+
+    // 유저 레이팅 증가
+    public void increaseRating(int userId, int amount) {
+        User user = getUserById(userId);
+        user.increaseRating(amount);
+    }
+
+    // 유저 레이팅 감소
+    public void decreaseRating(int userId, int amount) {
+        User user = getUserById(userId);
+        user.decreaseRating(amount);
+    }
 }
