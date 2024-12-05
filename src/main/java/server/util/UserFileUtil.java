@@ -94,7 +94,8 @@ public class UserFileUtil {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) { // 덮어쓰기 모드
             for (User user : users.values()) {
-                writer.write(user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " " + user.getRating());
+                writer.write(user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " "
+                        + user.getRating());
                 writer.newLine();
             }
             System.out.println("유저 파일 갱신 완료.");
@@ -102,5 +103,4 @@ public class UserFileUtil {
             e.printStackTrace();
         }
     }
-
 }

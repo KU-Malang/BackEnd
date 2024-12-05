@@ -1,5 +1,7 @@
 package server.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +14,12 @@ public class Room {
     private final int roomId;
     private final String roomName;
     private final int maxPlayers;
-    private final int hostUserId;
+    private int hostUserId;
     private final int quizCount;
     private boolean gameInProgress = false;
     private boolean isPracticeIssued = false; // 연습 문제 출제 여부
     private boolean isRedemptionIssued = false; // 패자부활전 문제 출제 여부
+    private int redemptionQuizIndex; // 패자부활전 문제 번호
     private int currentQuizCount = 0;
 
     private final Map<Integer, PrintWriter> userWriter = new ConcurrentHashMap<>();
@@ -48,8 +51,6 @@ public class Room {
         roomThread.stopThread();
     }
 
-
-
     // 작업 추가
     public void addTask(Runnable task) {
         roomThread.addTask(task);
@@ -62,6 +63,18 @@ public class Room {
         }
         userWriter.put(userId, writer);
         return true;
+    }
+
+    // 방에 참여 중인 유저인지 확인
+    public boolean isUserInRoom(int userId) {
+        return userWriter.containsKey(userId);
+    }
+
+    // 유저 삭제
+    public synchronized void removeUser(int userId) {
+        userWriter.remove(userId);
+        userCorrectCount.remove(userId);
+        userStatus.remove(userId);
     }
 
     // 특정 유저에게 메시지 전송
@@ -133,6 +146,39 @@ public class Room {
         }
     }
 
+    // 패자부활전 승자에 대한 메서드 - 상위 50% 유저의 상태를 다시 true로 설정하고, 패자부활전에서 탈락한 하위 50% 유저는 false로 설정
+    public synchronized void updateStatusAfterRedemption(int winnerUserId) {
+        // userCorrectCount를 오름차순으로 정렬하고 유저 ID 리스트를 가져옴
+        List<Map.Entry<Integer, Integer>> sortedUsers = userCorrectCount.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue()) // 점수를 기준으로 오름차순 정렬
+                .toList();
+
+        int totalUsers = sortedUsers.size();
+        int halfUsers = totalUsers % 2 == 0 ? totalUsers / 2 : (totalUsers + 1) / 2;
+
+        // 상위 50% 유저의 상태를 true로 설정
+        for (int i = halfUsers; i < totalUsers; i++) {
+            int userId = sortedUsers.get(i).getKey();
+            if (userId != winnerUserId) {
+                userStatus.put(userId, true);
+                System.out.println("유저 " + userId + "의 상태가 true로 설정되었습니다 (패자부활전 이후).");
+            }
+        }
+
+        // 하위 50% 유저의 상태를 false로 설정 (패자부활전 승자 제외)
+        for (int i = 0; i < halfUsers; i++) {
+            int userId = sortedUsers.get(i).getKey();
+            if (userId != winnerUserId) {
+                userStatus.put(userId, false);
+                System.out.println("유저 " + userId + "의 상태가 false로 설정되었습니다 (패자부활전 이후).");
+            }
+        }
+
+        // 패자부활전 승자는 상태를 true로 설정
+        userStatus.put(winnerUserId, true);
+        System.out.println("패자부활전에서 승리한 유저 " + winnerUserId + "의 상태가 true로 설정되었습니다.");
+    }
+
     // 현재 문제 번호에 대한 정답 제출 여부를 true로 설정
     public synchronized void markAnswerSubmitted(int quizIndex) {
         answerSubmitted.put(quizIndex, true);
@@ -154,12 +200,34 @@ public class Room {
         System.out.println("유저 " + userId + "의 정답 개수가 증가했습니다: " + userCorrectCount.get(userId));
     }
 
+    // userWriter의 1번째 index의 key를 hostUserId로 설정
+    public void setHostUserId() {
+        if (!userWriter.isEmpty()) {
+            this.hostUserId = userWriter.keySet().iterator().next();
+        } else {
+            this.roomThread.stopThread();
+        }
+    }
+
+    // 방에 참여 중인 유저 닉네임 리스트를 JsonArray로 반환
+    public JsonArray getUserNicknameList() {
+        JsonArray userNicknameList = new JsonArray();
+        userWriter.keySet().forEach(userId -> {
+            String userNickname = userManager.getUserNickname(userId);
+            JsonObject userNicknameJson = new JsonObject();
+            userNicknameJson.addProperty("userName", userNickname);
+            userNicknameList.add(userNicknameJson);
+        });
+        return userNicknameList;
+    }
+
     public void setPracticeIssued() {
         isPracticeIssued = true;
     }
 
     public void setRedemptionIssued() {
         isRedemptionIssued = true;
+        this.redemptionQuizIndex = currentQuizCount + 1;
     }
 
     // Getters
@@ -213,5 +281,13 @@ public class Room {
 
     public boolean isRedemptionIssued() {
         return isRedemptionIssued;
+    }
+
+    public int getRedemptionQuizIndex() {
+        return redemptionQuizIndex;
+    }
+
+    public int getCurrentQuizCount() {
+        return currentQuizCount;
     }
 }

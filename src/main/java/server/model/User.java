@@ -21,6 +21,10 @@ public class User {
         this.rating = rating;
     }
 
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
     public int getUserId() {
         return userId;
     }
@@ -43,9 +47,5 @@ public class User {
 
     public void decreaseRating(int amount) {
         this.rating -= amount;
-    }
-
-    public void setRating(int newRating) {
-        this.rating = newRating;
     }
 }

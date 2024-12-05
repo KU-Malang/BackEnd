@@ -2,17 +2,18 @@ package server.handler;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.PrintWriter;
+import java.util.Map;
 import server.manager.RoomManager;
 import server.manager.UserManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-import java.io.PrintWriter;
-import java.util.Map;
-
 public class GameResultHandler implements RequestHandler {
+
     private UserManager userManager;
     private RoomManager roomManager;
+
     public GameResultHandler(UserManager userManager, RoomManager roomManager) {
         this.userManager = userManager;
         this.roomManager = roomManager;
@@ -31,7 +32,6 @@ public class GameResultHandler implements RequestHandler {
             return;
         }
 
-
         // 게임이 진행 중인 방인지 확인
         if (!room.isGameInProgress()) {
             JsonObject errorResponse = new ResponseBuilder(9, "9002", "게임이 진행 중인 방이 아닙니다.")
@@ -41,6 +41,7 @@ public class GameResultHandler implements RequestHandler {
         }
 
         Map<Integer, Integer> userCorrectCount = room.getUserCorrectCount();
+
         // 총 맞춘 정답 수와 평균 계산
         int totalCorrect = userCorrectCount.values().stream().mapToInt(Integer::intValue).sum();
         int userCount = userCorrectCount.size();
@@ -84,7 +85,6 @@ public class GameResultHandler implements RequestHandler {
         response.add("data", data);
 
         // 클라이언트로 브로드캐스트
-        writer.println(response.toString());
+        writer.println(response);
     }
-
 }

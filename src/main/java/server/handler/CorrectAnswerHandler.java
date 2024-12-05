@@ -6,11 +6,11 @@ import server.manager.RoomManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class AnswerSubmissionHandler implements RequestHandler {
+public class CorrectAnswerHandler implements RequestHandler {
 
     private final RoomManager roomManager;
 
-    public AnswerSubmissionHandler(RoomManager roomManager) {
+    public CorrectAnswerHandler(RoomManager roomManager) {
         this.roomManager = roomManager;
     }
 
@@ -69,6 +69,19 @@ public class AnswerSubmissionHandler implements RequestHandler {
                     .build();
             writer.println(errorResponse.toString());
             return;
+        }
+
+        // 방에 참여 중인 유저가 아닐 경우
+        if (!roomManager.isUserInRoom(roomId, userId)) {
+            JsonObject errorResponse = new ResponseBuilder(7, "7007", "방에 참여 중인 유저가 아닙니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
+        // 정답이 나온 본 문제가 패자부활전 문제였을 경우
+        if (room.getCurrentQuizCount() == room.getRedemptionQuizIndex()) {
+            room.updateStatusAfterRedemption(userId);
         }
 
         // 정답 제출

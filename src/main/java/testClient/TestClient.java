@@ -46,9 +46,15 @@ public class TestClient {
         } finally {
             // 자원 정리
             try {
-                if (consoleReader != null) consoleReader.close();
-                if (writer != null) writer.close();
-                if (socket != null) socket.close();
+                if (consoleReader != null) {
+                    consoleReader.close();
+                }
+                if (writer != null) {
+                    writer.close();
+                }
+                if (socket != null) {
+                    socket.close();
+                }
             } catch (IOException e) {
                 System.out.println("자원 정리 중 오류 발생: " + e.getMessage());
             }
@@ -56,4 +62,3 @@ public class TestClient {
         }
     }
 }
-
