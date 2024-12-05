@@ -50,7 +50,7 @@ public class MainHandler {
                     //TODO- 오답 제출
                     break;
                 case 9: // 게임 결과 제공
-                    //TODO- 게임 결과 제공
+                    new GameResultHandler(userManager,roomManager).handleRequest(request, writer);
                     break;
                 case 10: // 방 나가기
                     //TODO- 방 나가기

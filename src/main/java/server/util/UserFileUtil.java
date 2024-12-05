@@ -39,7 +39,6 @@ public class UserFileUtil {
 
                     users.put(userId, new User(userId, nickname, password, rating));
                     nextUserId = Math.max(nextUserId, userId + 1); // 가장 큰 userId 갱신
-                    System.out.println("nextUserId: " + nextUserId);
                 }
             }
             System.out.println("유저 파일 로드 완료: " + users.size() + "명의 유저");
@@ -75,4 +74,33 @@ public class UserFileUtil {
     public Map<Integer, User> getUsers() {
         return users;
     }
+
+    public synchronized void updateUserScore(int userId, int newRating) {
+        // 해당 유저가 존재하는지 확인
+        if (users.containsKey(userId)) {
+            User user = users.get(userId);
+            user.setRating(newRating); // 메모리 내의 데이터 업데이트
+
+            // 파일 갱신
+            updateFile();
+        } else {
+            System.out.println("User ID " + userId + " 에 해당하는 유저가 없습니다");
+        }
+    }
+
+    // 파일 전체를 갱신하는 메서드
+    private synchronized void updateFile() {
+        File file = new File(USER_FILE);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) { // 덮어쓰기 모드
+            for (User user : users.values()) {
+                writer.write(user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " " + user.getRating());
+                writer.newLine();
+            }
+            System.out.println("유저 파일 갱신 완료.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
