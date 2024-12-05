@@ -71,6 +71,11 @@ public class CorrectAnswerHandler implements RequestHandler {
             return;
         }
 
+        // 정답이 나온 본 문제가 패자부활전 문제였을 경우
+        if (room.getCurrentQuizCount() == room.getRedemptionQuizIndex()) {
+            room.updateStatusAfterRedemption(userId);
+        }
+
         // 정답 제출
         roomManager.markAnswerSubmitted(roomId, userId);
         roomManager.incrementCorrectCount(roomId, userId);

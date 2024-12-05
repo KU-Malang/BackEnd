@@ -92,6 +92,11 @@ public class RoomManager {
         return getRoom(roomId).isCorrectQuizIndex(quizIndex);
     }
 
+    // 패자부활전 대상 유저 설정
+    public void setRedemptionEligibleUsers(int roomId) {
+        getRoom(roomId).setRedemptionEligibleUsers();
+    }
+
     // 정답 제출
     public void markAnswerSubmitted(int roomId, int quizIndex) {
         getRoom(roomId).markAnswerSubmitted(quizIndex);

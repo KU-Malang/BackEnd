@@ -67,6 +67,8 @@ public class IssueQuestionHandler implements RequestHandler {
                 writer.println(errorResponse.toString());
                 return;
             } else {
+                // 패자부활전에 참여할 유저들을 설정
+                roomManager.setRedemptionEligibleUsers(roomId);
                 room.setRedemptionIssued();
             }
         }
