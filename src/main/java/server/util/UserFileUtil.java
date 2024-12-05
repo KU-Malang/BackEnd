@@ -16,7 +16,6 @@ public class UserFileUtil {
 
     private int nextUserId = 1; // 새로운 유저 ID를 생성할 때 사용
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
-    
 
     // 유저 데이터를 파일에서 로드
     public void load() {
