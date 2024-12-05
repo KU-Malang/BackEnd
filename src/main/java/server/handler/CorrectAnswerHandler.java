@@ -6,11 +6,11 @@ import server.manager.RoomManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class AnswerSubmissionHandler implements RequestHandler {
+public class CorrectAnswerHandler implements RequestHandler {
 
     private final RoomManager roomManager;
 
-    public AnswerSubmissionHandler(RoomManager roomManager) {
+    public CorrectAnswerHandler(RoomManager roomManager) {
         this.roomManager = roomManager;
     }
 

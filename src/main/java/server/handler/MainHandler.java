@@ -40,14 +40,13 @@ public class MainHandler {
                     new TopicSelectionHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 6: // 문제 출제
-                    //TODO- 문제 출제
+                    new IssueQuestionHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 7: // 정답 제출
-                    //TODO- 정답 제출
-                    new AnswerSubmissionHandler(roomManager).handleRequest(request, writer);
+                    new CorrectAnswerHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 8: // 오답 제출
-                    //TODO- 오답 제출
+                    new WrongAnswerHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 9: // 게임 결과 제공
                     //TODO- 게임 결과 제공
