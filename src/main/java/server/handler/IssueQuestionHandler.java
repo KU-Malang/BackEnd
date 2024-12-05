@@ -49,10 +49,14 @@ public class IssueQuestionHandler implements RequestHandler {
 
         // 연습 문제가 출제되지 않았던 방인지 확인
         if (quizType.equals("PRACTICE")) {
-            JsonObject errorResponse = new ResponseBuilder(6, "6004", "이미 연습 문제가 출제되었던 방입니다.")
-                    .build();
-            writer.println(errorResponse.toString());
-            return;
+            if (room.isPracticeIssued()) {
+                JsonObject errorResponse = new ResponseBuilder(6, "6004", "이미 연습 문제가 출제되었던 방입니다.")
+                        .build();
+                writer.println(errorResponse.toString());
+                return;
+            } else {
+                room.setPracticeIssued();
+            }
         }
 
         // 패자부활전이 진행되지 않았던 방인지 확인
@@ -62,6 +66,8 @@ public class IssueQuestionHandler implements RequestHandler {
                         .build();
                 writer.println(errorResponse.toString());
                 return;
+            } else {
+                room.setRedemptionIssued();
             }
         }
 
