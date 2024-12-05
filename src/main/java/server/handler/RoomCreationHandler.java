@@ -62,7 +62,7 @@ public class RoomCreationHandler implements RequestHandler {
         }
 
         // 방 생성
-        Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount);
+        Room newRoom = roomManager.createRoom(roomName, maxPlayers, hostUserId, quizCount, writer);
 
         // 성공 응답
         JsonObject data = new JsonObject();

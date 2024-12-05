@@ -1,5 +1,6 @@
 package server.manager;
 
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import server.model.Room;
@@ -42,11 +43,13 @@ public class RoomManager {
     }
 
     // 방 생성
-    public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount) {
+    public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount,
+                                        PrintWriter printWriter) {
         int roomId = nextRoomId++;
         Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, userManager);
         room.startThread(); // Room 내부 쓰레드 시작
         rooms.put(roomId, room);
+        room.addUser(hostUserId, printWriter); // 호스트 유저 방에 추가
 
         return room;
     }
