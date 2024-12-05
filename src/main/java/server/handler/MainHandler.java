@@ -36,8 +36,8 @@ public class MainHandler {
                 case 4:
                     new JoinRoomHandler(roomManager, userManager).handleRequest(request, writer);
                     break;
-                case 5: // 퀴즈 주제 선택
-                    //TODO- 퀴즈 주제 선택
+                case 5:
+                    new TopicSelectionHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 6: // 문제 출제
                     //TODO- 문제 출제
