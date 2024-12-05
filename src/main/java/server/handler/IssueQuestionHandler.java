@@ -40,8 +40,8 @@ public class IssueQuestionHandler implements RequestHandler {
         }
 
         // 게임이 진행 중인 방인지 확인
-        if (!room.isGameInProgress()) {
-            JsonObject errorResponse = new ResponseBuilder(6, "6003", "이미 게임이 진행 중인 방입니다.")
+        if (!roomManager.isGameInProgress(roomId)) {
+            JsonObject errorResponse = new ResponseBuilder(6, "6003", "게임이 진행 중인 방이 아닙니다.")
                     .build();
             writer.println(errorResponse.toString());
             return;
