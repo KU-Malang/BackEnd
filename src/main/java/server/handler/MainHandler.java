@@ -49,7 +49,7 @@ public class MainHandler {
                     new WrongAnswerHandler(roomManager).handleRequest(request, writer);
                     break;
                 case 9: // 게임 결과 제공
-                    //TODO- 게임 결과 제공
+                    new GameResultHandler(userManager,roomManager).handleRequest(request, writer);
                     break;
                 case 10:
                     new ExitRoomHandler(roomManager).handleRequest(request, writer);

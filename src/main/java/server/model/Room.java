@@ -22,7 +22,6 @@ public class Room {
     private int redemptionQuizIndex; // 패자부활전 문제 번호
     private int currentQuizCount = 0;
 
-    private final Map<Integer, Integer> userRating = new ConcurrentHashMap<>(); // 유저 점수 관리
     private final Map<Integer, PrintWriter> userWriter = new ConcurrentHashMap<>();
     private final Map<Integer, Integer> userCorrectCount = new ConcurrentHashMap<>(); // 유저 정답 개수 관리
     private final Map<Integer, Boolean> userStatus = new ConcurrentHashMap<>(); // 유저 상태 관리
@@ -52,11 +51,7 @@ public class Room {
         roomThread.stopThread();
     }
 
-    // 점수 증가 메서드
-    public synchronized void incrementScore(int userId) {
-        userRating.put(userId, userRating.getOrDefault(userId, 0) + 1);
-        System.out.println("유저 " + userId + "의 점수가 증가했습니다: " + userRating.get(userId));
-    }
+
 
     // 작업 추가
     public void addTask(Runnable task) {
@@ -69,8 +64,6 @@ public class Room {
             return false;
         }
         userWriter.put(userId, writer);
-        int addUserRating = userManager.getUserById(userId).getRating();
-        this.userRating.put(userId, addUserRating);
         return true;
     }
 
