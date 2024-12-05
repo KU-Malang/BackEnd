@@ -82,6 +82,31 @@ public class RoomManager {
         getRoom(roomId).incrementQuizCount();
     }
 
+    // 게임 진행 중인지 확인
+    public boolean isGameInProgress(int roomId) {
+        return getRoom(roomId).isGameInProgress();
+    }
+
+    // 유효한 문제 번호인지 확인
+    public boolean isCorrectQuizIndex(int roomId, int quizIndex) {
+        return getRoom(roomId).isCorrectQuizIndex(quizIndex);
+    }
+
+    // 정답 제출
+    public void markAnswerSubmitted(int roomId, int quizIndex) {
+        getRoom(roomId).markAnswerSubmitted(quizIndex);
+    }
+
+    // 정답 제출 여부 확인
+    public boolean isAnswerSubmitted(int roomId, int quizIndex) {
+        return getRoom(roomId).isAnswerSubmitted(quizIndex);
+    }
+
+    // 유저 정답 개수 증가
+    public void incrementCorrectCount(int roomId, int userId) {
+        getRoom(roomId).incrementCorrectCount(userId);
+    }
+
     // 전체 방 조회
     public Map<Integer, Room> getAllRooms() {
         return rooms;

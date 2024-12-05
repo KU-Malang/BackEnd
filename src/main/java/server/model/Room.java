@@ -23,6 +23,7 @@ public class Room {
     private final Map<Integer, PrintWriter> userWriter = new ConcurrentHashMap<>();
     private final Map<Integer, Integer> userCorrectCount = new ConcurrentHashMap<>(); // 유저 정답 개수 관리
     private final Map<Integer, Boolean> userStatus = new ConcurrentHashMap<>(); // 유저 상태 관리
+    private final Map<Integer, Boolean> answerSubmitted = new ConcurrentHashMap<>(); // 문제 정답 제출 여부 관리
 
     private final RoomThread roomThread; // Room 자체 쓰레드 관리
 
@@ -93,11 +94,19 @@ public class Room {
         if (this.gameInProgress) {
             return;
         }
+
         this.gameInProgress = true;
+
+        // userCorrectCount, userStatus 초기화
         userWriter.keySet().forEach(userId -> {
             userCorrectCount.put(userId, 0);
             userStatus.put(userId, true);
         });
+
+        // answerSubmitted 초기화
+        for (int i = 1; i <= quizCount; i++) {
+            answerSubmitted.put(i, false);
+        }
     }
 
     public synchronized void incrementQuizCount() {
@@ -129,6 +138,27 @@ public class Room {
             userStatus.put(userId, true);
             System.out.println("유저 " + userId + "의 상태가 true로 설정되었습니다 (패자부활전 대상).");
         }
+    }
+
+    // 현재 문제 번호에 대한 정답 제출 여부를 true로 설정
+    public synchronized void markAnswerSubmitted(int quizIndex) {
+        answerSubmitted.put(quizIndex, true);
+    }
+
+    // 정답 제출 여부 확인
+    public boolean isAnswerSubmitted(int quizIndex) {
+        return answerSubmitted.get(quizIndex);
+    }
+
+    // 유효한 문제 번호인지 확인
+    public boolean isCorrectQuizIndex(int quizIndex) {
+        return answerSubmitted.containsKey(quizIndex);
+    }
+
+    // 유저 정답 개수 증가
+    public synchronized void incrementCorrectCount(int userId) {
+        userCorrectCount.put(userId, userCorrectCount.getOrDefault(userId, 0) + 1);
+        System.out.println("유저 " + userId + "의 정답 개수가 증가했습니다: " + userCorrectCount.get(userId));
     }
 
     public void setPracticeIssued() {
