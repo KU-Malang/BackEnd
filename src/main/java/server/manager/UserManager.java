@@ -1,7 +1,6 @@
 package server.manager;
 
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import server.model.User;
@@ -14,13 +13,13 @@ public class UserManager {
     private final UserFileUtil userFileUtil; // 유저 파일 유틸리티
 
     public UserManager(UserFileUtil userFileUtil) {
-        this.userFileUtil= userFileUtil;
+        this.userFileUtil = userFileUtil;
         this.users = new ConcurrentHashMap<>(userFileUtil.getUsers()); // 파일에서 유저 데이터 로드
     }
 
     // 유저 로그인
     public void loginUser(int userId, PrintWriter writer) {
-        loggedInUsers.put(userId,writer ); // 유저를 로그인 상태로 추가
+        loggedInUsers.put(userId, writer); // 유저를 로그인 상태로 추가
     }
 
     // 유저 로그아웃

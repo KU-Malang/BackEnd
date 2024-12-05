@@ -2,12 +2,12 @@ package server.handler;
 
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
-import java.net.Socket;
+import server.UserThread;
 import server.manager.UserManager;
 import server.model.User;
 import server.util.ResponseBuilder;
 
-public class LoginHandler implements RequestHandler {
+public class LoginHandler {
 
     private final UserManager userManager; // UserManager 주입
 
@@ -15,8 +15,7 @@ public class LoginHandler implements RequestHandler {
         this.userManager = userManager;
     }
 
-    @Override
-    public void handleRequest(JsonObject request, PrintWriter writer) {
+    public void handleRequest(JsonObject request, PrintWriter writer, UserThread userThread) {
         String nickname = request.get("nickname").getAsString();
         String password = request.get("password").getAsString();
 
@@ -53,12 +52,14 @@ public class LoginHandler implements RequestHandler {
 
         userManager.loginUser(currentUser.getUserId(), writer);
 
+        // 로그인 성공 시 UserThread에 userId 할당
+        userThread.setUserId(currentUser.getUserId());
 
         // 성공 응답
         JsonObject data = new JsonObject();
         data.addProperty("userId", currentUser.getUserId());
 
-        JsonObject successResponse = new ResponseBuilder(1, "success", "로그인 성공")
+        JsonObject successResponse = new ResponseBuilder(1, "success", "성공")
                 .withData(data)
                 .build();
         writer.println(successResponse.toString());

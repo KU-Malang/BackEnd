@@ -1,15 +1,12 @@
 package server.handler;
 
-
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
-import java.net.Socket;
-
-import server.model.Room;
 import server.manager.RoomManager;
+import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class AnswerSubmissionHandler implements RequestHandler  {
+public class AnswerSubmissionHandler implements RequestHandler {
 
     private final RoomManager roomManager;
 
@@ -17,9 +14,7 @@ public class AnswerSubmissionHandler implements RequestHandler  {
         this.roomManager = roomManager;
     }
 
-
     @Override
-
     public void handleRequest(JsonObject request, PrintWriter writer) {
         int userId = request.get("userId").getAsInt();
         int roomId = request.get("roomId").getAsInt();

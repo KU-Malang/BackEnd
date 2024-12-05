@@ -59,7 +59,8 @@ public class UserFileUtil {
 
     public synchronized void save(User user) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_FILE, true))) { // append = true
-            writer.write(user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " " + user.getRating());
+            writer.write(
+                    user.getUserId() + " " + user.getNickname() + " " + user.getPassword() + " " + user.getRating());
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
