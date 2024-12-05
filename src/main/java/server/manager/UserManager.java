@@ -76,4 +76,30 @@ public class UserManager {
     public User getUserById(int userId) {
         return users.get(userId);
     }
+
+    public int getUserRating(int userId) {
+        isValidUser(userId);    //접속해 있는 유저인지 확인
+        return users.get(userId).getRating();
+    }
+
+    public void updateUserScore(int userId, int newRating) {
+        userFileUtil.updateUserScore(userId, newRating);
+    }
+
+    // 유저 ID로 유저 닉네임 조회
+    public String getUserNickname(Integer userId) {
+        return getUserById(userId).getNickname();
+    }
+
+    // 유저 레이팅 증가
+    public void increaseRating(int userId, int amount) {
+        User user = getUserById(userId);
+        user.increaseRating(amount);
+    }
+
+    // 유저 레이팅 감소
+    public void decreaseRating(int userId, int amount) {
+        User user = getUserById(userId);
+        user.decreaseRating(amount);
+    }
 }
