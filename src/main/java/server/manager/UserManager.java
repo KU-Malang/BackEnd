@@ -76,4 +76,17 @@ public class UserManager {
     public User getUserById(int userId) {
         return users.get(userId);
     }
+
+    public int getUserRating(int userId) {
+        isValidUser(userId);    //접속해 있는 유저인지 확인
+        return users.get(userId).getRating();
+    }
+
+    public void updateUserScore(int userId, int newRating) {
+        userFileUtil.updateUserScore(userId,newRating);
+    }
+
+    public String getUserNickname(Integer userId) {
+        return getUserById(userId).getNickname();
+    }
 }
