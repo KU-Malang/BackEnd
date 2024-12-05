@@ -19,7 +19,7 @@ public class LoginHandler {
         String nickname = request.get("nickname").getAsString();
         String password = request.get("password").getAsString();
 
-        if (nickname.length() >= 10) {
+        if (nickname.length() > 10) {
             JsonObject errorResponse = new ResponseBuilder(1, "1001", "유저 아이디가 10글자를 초과합니다.")
                     .build();
             writer.println(errorResponse.toString());

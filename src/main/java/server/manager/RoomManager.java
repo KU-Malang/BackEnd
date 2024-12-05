@@ -15,9 +15,19 @@ public class RoomManager {
         this.userManager = userManager;
     }
 
-    // 호스트 유저 확인
-    public boolean isValidHostUser(int userid) {
+    // 유저 확인
+    public boolean isValidUser(int userid) {
         return userManager.isValidUser(userid);
+    }
+
+    // 호스트 유저인지 확인
+    public boolean isValidHostUser(int roomId, int userid) {
+        return getRoom(roomId).getHostUserId() == userid;
+    }
+
+    // 로그인되어 있는 유저인지 확인
+    public boolean isLoginUser(int userId) {
+        return userManager.isUserLoggedIn(userId);
     }
 
     // 방 이름 유효성 확인
@@ -60,6 +70,11 @@ public class RoomManager {
         } else {
             System.out.println("방 ID " + roomId + "를 찾을 수 없습니다.");
         }
+    }
+
+    // 게임 시작
+    public void startGame(int roomId) {
+        getRoom(roomId).startGame();
     }
 
     // 전체 방 조회

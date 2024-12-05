@@ -22,8 +22,16 @@ public class RoomCreationHandler implements RequestHandler {
         int quizCount = request.get("quizCount").getAsInt();
 
         // hostUserId가 유효한지 확인
-        if (!roomManager.isValidHostUser(hostUserId)) {
+        if (!roomManager.isValidUser(hostUserId)) {
             JsonObject errorResponse = new ResponseBuilder(2, "2002", "존재하지 않는 유저 ID입니다.")
+                    .build();
+            writer.println(errorResponse.toString());
+            return;
+        }
+
+        // hostUserId가 로그인되어 있는지 확인
+        if (!roomManager.isLoginUser(hostUserId)) {
+            JsonObject errorResponse = new ResponseBuilder(2, "2006", "로그인되어 있지 않은 유저입니다.")
                     .build();
             writer.println(errorResponse.toString());
             return;

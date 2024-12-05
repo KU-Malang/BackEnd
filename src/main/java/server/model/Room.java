@@ -14,9 +14,11 @@ public class Room {
     private final int hostUserId;
     private final int quizCount;
     private boolean gameInProgress = false;
-    private final Map<Integer, Integer> userRating = new ConcurrentHashMap<>(); // 유저 점수 관리
 
+    private final Map<Integer, Integer> userRating = new ConcurrentHashMap<>(); // 유저 점수 관리
     private final Map<Integer, PrintWriter> userWriter = new ConcurrentHashMap<>();
+    private final Map<Integer, Integer> userCorrectCount = new ConcurrentHashMap<>(); // 유저 정답 개수 관리
+    private final Map<Integer, Boolean> userStatus = new ConcurrentHashMap<>(); // 유저 상태 관리
 
     private final RoomThread roomThread; // Room 자체 쓰레드 관리
 
@@ -79,6 +81,19 @@ public class Room {
             } catch (Exception e) {
                 System.out.println("메시지 브로드캐스트 실패 - 유저 ID: " + userId);
             }
+        });
+    }
+
+    // gameInProgress를 True로 바꾸어 게임 시작을 알리고,
+    // 현재 방 안에 있는 유저들의 ID를 바탕으로 userCorrectCount, userStatus initialize 한다.
+    public synchronized void startGame() {
+        if (this.gameInProgress) {
+            return;
+        }
+        this.gameInProgress = true;
+        userWriter.keySet().forEach(userId -> {
+            userCorrectCount.put(userId, 0);
+            userStatus.put(userId, true);
         });
     }
 
