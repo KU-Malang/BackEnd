@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import server.RoomThread;
+import server.manager.RoomManager;
 import server.manager.UserManager;
 
 public class Room {
@@ -31,7 +32,9 @@ public class Room {
 
     private final UserManager userManager;
 
-    public Room(int roomId, String roomName, int maxPlayers, int hostUserId, int quizCount, UserManager userManager) {
+    private final RoomManager roomManager;
+
+    public Room(int roomId, String roomName, int maxPlayers, int hostUserId, int quizCount, UserManager userManager, RoomManager roomManager) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.maxPlayers = maxPlayers;
@@ -39,6 +42,7 @@ public class Room {
         this.quizCount = quizCount;
         this.roomThread = new RoomThread(this);
         this.userManager = userManager;
+        this.roomManager=roomManager;
     }
 
     // 방 쓰레드 시작
@@ -205,7 +209,7 @@ public class Room {
         if (!userWriter.isEmpty()) {
             this.hostUserId = userWriter.keySet().iterator().next();
         } else {
-            this.roomThread.stopThread();
+            roomManager.deleteRoom(roomId);
         }
     }
 
