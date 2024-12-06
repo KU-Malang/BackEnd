@@ -1,5 +1,6 @@
 package server.handler;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
 import server.manager.RoomManager;
@@ -69,9 +70,10 @@ public class JoinRoomHandler implements RequestHandler {
 
         // 방 입장 성공
         JsonObject data = new JsonObject();
-        data.addProperty("roomId", room.getRoomId());
-        data.addProperty("currentPlayers", room.getCurrentPlayers());
-        data.addProperty("maxPlayers", room.getMaxPlayers());
+        data.addProperty("roomName", room.getRoomName());
+
+        JsonArray userList= room.getUserNicknameList();
+        data.add("userList", userList);
 
         JsonObject successResponse = new ResponseBuilder(4, "success", "방 입장 성공")
                 .withData(data)
