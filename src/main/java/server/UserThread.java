@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import server.handler.MainHandler;
+import server.manager.RoomManager;
 import server.manager.UserManager;
 
 public class UserThread implements Runnable {
@@ -13,13 +14,16 @@ public class UserThread implements Runnable {
     private final Socket socket;
     private final MainHandler mainHandler; // 공유된 MainHandler 사용
     private final UserManager userManager; // UserManager 추가
+    private final RoomManager roomManager; // UserManager 추가
     private volatile boolean running = true; // 쓰레드 상태 관리
     private int userId = 0; // 로그인되지 않은 상태의 기본값
+    private int roomId = 0; // 아무 방에도 입장 하지 않은 상태의 기본값
 
-    public UserThread(Socket socket, MainHandler mainHandler, UserManager userManager) {
+    public UserThread(Socket socket, MainHandler mainHandler, UserManager userManager, RoomManager roomManager) {
         this.socket = socket;
         this.mainHandler = mainHandler;
         this.userManager = userManager;
+        this.roomManager = roomManager;
     }
 
     @Override
@@ -56,6 +60,8 @@ public class UserThread implements Runnable {
     private void cleanup() {
         System.out.println("유저 쓰레드 종료");
 
+        roomManager.removeUserWithPenalty(userId, roomId);
+
         // userId가 설정된 경우 로그아웃 처리
         if (userId != 0) {
             userManager.logoutUser(userId);
@@ -72,5 +78,9 @@ public class UserThread implements Runnable {
 
     public int getUserId() {
         return userId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 }

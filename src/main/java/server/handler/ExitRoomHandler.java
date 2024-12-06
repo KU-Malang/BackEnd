@@ -54,29 +54,9 @@ public class ExitRoomHandler implements RequestHandler {
             return;
         }
 
-        // 방 나가기
-        roomManager.removeUserFromRoom(roomId, userId);
+        roomManager.removeUserWithPenalty(roomId, userId);
 
-        if (roomManager.isGameInProgress(roomId)) {
-            User user = roomManager.getUserById(userId);
-
-            if (user.getRating() < 300) {
-                user.setRating(0);
-            } else {
-                roomManager.decreaseRating(userId, 300);
-            }
-
-            roomManager.updateUserScore(userId, user.getRating());
-        }
-
-        JsonObject successResponse = new ResponseBuilder(10, "success", "성공")
-                .build();
-        writer.println(successResponse.toString());
-
-        // 본 유저가 호스트 유저였을 경우 다른 유저에게 넘김 (방에 남은 유저가 없는 경우 방 삭제)
-        if (userId == room.getHostUserId()) {
-            room.setHostUserId();
-        }
+        
 
         String roomName = room.getRoomName();
         String hostUser = roomManager.getUserNickname(room.getHostUserId());
