@@ -12,7 +12,7 @@ import server.model.User;
 
 public class UserFileUtil {
 
-    private static final String USER_FILE = "/home/ubuntu/BackEnd/user.txt"; // 절대 경로로 변경
+    private static final String USER_FILE = "/Users/minseok/Documents/3-2/네트워크 프로그래밍/NetworkTeam9/user.txt"; // 절대 경로로 변경
 
     private int nextUserId = 1; // 새로운 유저 ID를 생성할 때 사용
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
