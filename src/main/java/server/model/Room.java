@@ -40,7 +40,7 @@ public class Room {
         this.maxPlayers = maxPlayers;
         this.hostUserId = hostUserId;
         this.quizCount = quizCount;
-        this.roomThread = new RoomThread(this);
+        this.roomThread = new RoomThread(this,roomManager);
         this.userManager = userManager;
         this.roomManager=roomManager;
     }
@@ -55,10 +55,6 @@ public class Room {
         roomThread.stopThread();
     }
 
-    // 작업 추가
-    public void addTask(Runnable task) {
-        roomThread.addTask(task);
-    }
 
     // 유저 추가
     public synchronized boolean addUser(int userId, PrintWriter writer) {
