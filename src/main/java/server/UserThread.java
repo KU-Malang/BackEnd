@@ -60,7 +60,7 @@ public class UserThread implements Runnable {
     private void cleanup() {
         System.out.println("유저 쓰레드 종료");
 
-        roomManager.removeUserWithPenalty(userId, roomId);
+        roomManager.removeUserWithPenalty(roomId, userId);
 
         // userId가 설정된 경우 로그아웃 처리
         if (userId != 0) {
