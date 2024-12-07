@@ -34,7 +34,7 @@ public class MainHandler {
                     new RoomListHandler(roomManager, userManager).handleRequest(request, writer);
                     break;
                 case 4:
-                    new JoinRoomHandler(roomManager, userManager).handleRequest(request, writer);
+                    new JoinRoomHandler(roomManager, userManager).handleRequest(request, writer,userThread);
                     break;
                 case 5:
                     new TopicSelectionHandler(roomManager).handleRequest(request, writer);

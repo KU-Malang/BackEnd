@@ -3,12 +3,14 @@ package server.handler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
+
+import server.UserThread;
 import server.manager.RoomManager;
 import server.manager.UserManager;
 import server.model.Room;
 import server.util.ResponseBuilder;
 
-public class JoinRoomHandler implements RequestHandler {
+public class JoinRoomHandler {
 
     private final RoomManager roomManager;
     private final UserManager userManager;
@@ -18,8 +20,7 @@ public class JoinRoomHandler implements RequestHandler {
         this.userManager = userManager;
     }
 
-    @Override
-    public void handleRequest(JsonObject request, PrintWriter writer) {
+    public void handleRequest(JsonObject request, PrintWriter writer,UserThread userThread) {
         int roomId = request.get("roomId").getAsInt();
         int userId = request.get("userId").getAsInt();
 
@@ -67,6 +68,9 @@ public class JoinRoomHandler implements RequestHandler {
 
             return;
         }
+
+        userThread.setRoomId(roomId);
+
 
         // 방 입장 성공
         JsonObject data = new JsonObject();

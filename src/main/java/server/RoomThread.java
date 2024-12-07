@@ -18,11 +18,12 @@ public class RoomThread implements Runnable {
     public void run() {
         while (running) {
             try {
+                // 1분마다 확인 (60초 대기)
+                Thread.sleep(10 * 1000); // 10초 대기
+
                 // 방에 유저가 있는지 확인
                 checkRoomStatus();
 
-                // 1분마다 확인 (60초 대기)
-                Thread.sleep(60 * 1000); // 1분 대기
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
