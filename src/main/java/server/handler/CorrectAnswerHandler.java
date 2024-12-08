@@ -90,7 +90,7 @@ public class CorrectAnswerHandler implements RequestHandler {
 
         // 정답 제출 성공 응답
         JsonObject data = new JsonObject();
-        data.addProperty("userId", userId);
+        data.addProperty("userNickname", roomManager.getUserNickname(userId));
         data.addProperty("correctAnswer", correctAnswer);
 
         JsonObject successResponse = new ResponseBuilder(7, "success", "성공")
