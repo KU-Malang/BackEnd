@@ -64,7 +64,7 @@ public class WrongAnswerHandler implements RequestHandler {
 
         // 오답 제출 성공 응답
         JsonObject data = new JsonObject();
-        data.addProperty("userId", userId);
+        data.addProperty("userNickname", roomManager.getUserNickname(userId));
         data.addProperty("wrongAnswer", wrongAnswer);
 
         JsonObject successResponse = new ResponseBuilder(8, "success", "성공")
