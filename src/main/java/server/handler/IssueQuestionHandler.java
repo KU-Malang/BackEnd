@@ -74,7 +74,7 @@ public class IssueQuestionHandler implements RequestHandler {
         }
 
         // 방의 현재 문제 번호
-        if (quizType.equals("PRATICE") || quizType.equals("REDEMPTION")) {
+        if (quizType.equals("PRACTICE") || quizType.equals("REDEMPTION")) {
         } else {
             roomManager.incrementQuizCount(roomId);
         }
