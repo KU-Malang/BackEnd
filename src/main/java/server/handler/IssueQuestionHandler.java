@@ -82,7 +82,7 @@ public class IssueQuestionHandler implements RequestHandler {
         userStatus.forEach((userId, isParticipating) -> {
             JsonObject data = new JsonObject();
             data.addProperty("topic", quizType);
-            data.addProperty("quizNumber", room.getQuizCount());
+            data.addProperty("quizNumber", room.getCurrentQuizCount());
             data.addProperty("userStatus", isParticipating);
 
             JsonObject successResponse = new ResponseBuilder(6, "success", "성공")
