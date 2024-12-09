@@ -74,7 +74,18 @@ public class IssueQuestionHandler implements RequestHandler {
         }
 
         // 방의 현재 문제 번호
-        roomManager.incrementQuizCount(roomId);
+        if (quizType.equals("PRATICE") || quizType.equals("REDEMPTION")) {
+        } else {
+            roomManager.incrementQuizCount(roomId);
+        }
+
+        int currentQuizIndex = room.getCurrentQuizCount();
+
+        if (quizType.equals("REDEMPTION")) {
+            currentQuizIndex = currentQuizIndex % 3 + 1;
+        }
+
+        int finalCurrentQuizIndex = currentQuizIndex;
 
         // 유저들의 이번 문제 참여 여부를 가져옴
         Map<Integer, Boolean> userStatus = room.getUserStatus();
@@ -82,7 +93,7 @@ public class IssueQuestionHandler implements RequestHandler {
         userStatus.forEach((userId, isParticipating) -> {
             JsonObject data = new JsonObject();
             data.addProperty("topic", quizType);
-            data.addProperty("quizNumber", room.getCurrentQuizCount());
+            data.addProperty("quizNumber", finalCurrentQuizIndex);
             data.addProperty("userStatus", isParticipating);
 
             JsonObject successResponse = new ResponseBuilder(6, "success", "성공")
