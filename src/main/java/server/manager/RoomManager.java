@@ -65,7 +65,7 @@ public class RoomManager {
     // 방 생성
     public synchronized Room createRoom(String roomName, int maxPlayers, int hostUserId, int quizCount) {
         int roomId = nextRoomId++;
-        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, userManager,this);
+        Room room = new Room(roomId, roomName, maxPlayers, hostUserId, quizCount, userManager, this);
         room.startThread(); // Room 내부 쓰레드 시작
         rooms.put(roomId, room);
 
@@ -163,6 +163,10 @@ public class RoomManager {
         removeUserFromRoom(roomId, userId);
 
         Room room = rooms.get(roomId);
+
+        if (room == null) {
+            return;
+        }
 
         if (isGameInProgress(roomId)) {
             User user = getUserById(userId);
