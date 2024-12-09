@@ -159,9 +159,6 @@ public class RoomManager {
     }
 
     public void removeUserWithPenalty(int roomId, int userId) {
-        // 방 나가기
-        removeUserFromRoom(roomId, userId);
-
         Room room = rooms.get(roomId);
 
         if (room == null) {
@@ -179,6 +176,9 @@ public class RoomManager {
 
             updateUserScore(userId, user.getRating());
         }
+
+        // 방 나가기
+        removeUserFromRoom(roomId, userId);
 
         // 본 유저가 호스트 유저였을 경우 다른 유저에게 넘김 (방에 남은 유저가 없는 경우 방 삭제)
         if (userId == room.getHostUserId()) {
